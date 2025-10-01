@@ -1,0 +1,50 @@
+import { Product } from "../types";
+
+export const burgers: Product[] = [
+  {
+    id: "b1",
+    name: "Cheeseburger",
+    description: "Hamburguesa clásica con queso cheddar y carne jugosa.",
+    image: "/images/burgers/b1-burger01.jpg",
+    price: 7.99,
+    category: "Hamburguesas",
+    popular: true,
+    isVegetarian: false,
+  },
+  {
+    id: "b2",
+    name: "Veggie Burger",
+    description: "Hamburguesa vegetariana con garbanzos y verduras.",
+    image: "/images/burgers/b2-burger02.jpg",
+    price: 6.99,
+    category: "Hamburguesas",
+    isVegetarian: true,
+  },
+  {
+    id: "b3",
+    name: "Veggie Burger",
+    description: "Hamburguesa vegetariana con garbanzos y verduras.",
+    image: "/images/burgers/b3-burger03.jpg",
+    price: 6.99,
+    category: "Hamburguesas",
+    isVegetarian: false,
+  },
+  {
+    id: "b4",
+    name: "Veggie Burger",
+    description: "Hamburguesa vegetariana con garbanzos y verduras.",
+    image: "/images/burgers/b4-burger04.jpg",
+    price: 6.99,
+    category: "Hamburguesas",
+    isVegetarian: false,
+  },
+  {
+    id: "b5",
+    name: "Veggie Burger",
+    description: "Hamburguesa vegetariana con garbanzos y verduras.",
+    image: "/images/burgers/b5-burger05.jpg",
+    price: 6.99,
+    category: "Hamburguesas",
+    isVegetarian: false,
+  },
+];

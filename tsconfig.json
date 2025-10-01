@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES6",                     // 🟢 Versión de JS que TypeScript generará
+    "lib": ["DOM", "DOM.Iterable", "ESNext"], // 🟢 Tipos de librerías JS/DOM disponibles
+    "module": "ESNext",                  // 🟢 Sistema de módulos (import/export)
+    "moduleResolution": "Node",          // 🟢 Cómo TypeScript busca los módulos
+    "jsx": "react-jsx",                  // 🟢 Permite usar JSX en TSX (React 17+)
+    "esModuleInterop": true,             // 🟢 Permite importaciones limpias de módulos CommonJS
+    "allowSyntheticDefaultImports": true,// 🟢 Similar a la anterior, más permisiva con imports
+    "strict": true,                      // 🟢 Activa todas las comprobaciones estrictas
+    "forceConsistentCasingInFileNames": true, // 🟢 Evita errores por mayúsculas/minúsculas en imports
+    "skipLibCheck": true,                // 🟡 Salta chequeo de tipos en node_modules
+    "isolatedModules": true,             // 🟢 Obligatorio si usamos Babel + TS (Next.js, Vite)
+    "resolveJsonModule": true,           // 🟢 Permite importar JSON como módulo
+    "noEmit": true,                       // 🟢 No genera archivos JS (solo chequeo de tipos)
+    "allowJs": true                       // 🟡 Permite usar archivos .js junto con TS
+  },
+  "include": ["src"],                     // 🟢 Carpetas que TypeScript revisará
+  "exclude": ["node_modules", "dist"]     // 🟢 Carpeta que TypeScript ignorará
+}

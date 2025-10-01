@@ -1,0 +1,44 @@
+// src/components/layout/Layout.tsx
+import React, { useEffect, Suspense } from "react";
+import { AnimatePresence } from "framer-motion";
+import { useLocation } from "react-router-dom";
+
+import Header from "./Header";
+import Footer from "./Footer";
+import OutletWrapper from "./OutletWrapper";
+
+const Layout: React.FC = () => {
+  const { pathname } = useLocation();
+
+  // Scroll al top en cambio de ruta
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [pathname]);
+
+  return (
+    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Header siempre fijo arriba */}
+      <Header />
+
+      {/* Contenido principal con animación */}
+      <main className="flex-grow">
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center py-20 text-gray-500 dark:text-gray-300">
+              <span className="animate-pulse">Cargando contenido...</span>
+            </div>
+          }
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            <OutletWrapper key={pathname} />
+          </AnimatePresence>
+        </Suspense>
+      </main>
+
+      {/* Footer siempre visible */}
+      <Footer />
+    </div>
+  );
+};
+
+export default Layout;

@@ -1,0 +1,102 @@
+------------------------UI----------------------------
+1️⃣ Button.tsx---✅ Mejoras
+
+React.memo para evitar renders innecesarios.
+Tipado correcto para botón normal y Link.
+Comentarios claros de documentación.
+Limpieza de código y Tailwind consistente.
+
+
+2️⃣ CartItem.tsx --- ✅ Mejoras 
+
+Memoización con React.memo.
+useMemo para cálculo de precio.
+Comentarios claros para documentación.
+Consistencia con Tailwind y dark mode.
+
+3️⃣ CategoryButton.tsx✅ Mejoras:
+
+React.memo para evitar renders innecesarios.
+Comentarios claros de documentación.
+Código limpio y tipado
+
+4️⃣ CheckboxFilter.tsx✅ Mejoras :
+
+Memoización con React.memo.
+Comentarios claros.
+Código limpio y listo para producción.
+
+
+5️⃣ HeaderPizzaLeft.tsx - 6️⃣ HeaderPizzaRight.tsx
+
+
+
+---Order---
+
+ 6 componentes de /order están revisados, optimizados y consistentes:
+
+OrderCart ✅
+OrderConfirmation ✅
+OrderContainer ✅
+OrderDetailsForm ✅
+OrderSteps ✅
+OrderSummary ✅
+
+OrderPage (Página principal)
+│
+├─ OrderContainer (Layout principal)
+│   │
+│   ├─ OrderSteps (Barra de progreso: Cart → Details → Confirmation)
+│   │
+│   └─ AnimatePresence (Animaciones de transición de pasos)
+│       │
+│       ├─ Step = "cart" 
+│       │   └─ OrderCart
+│       │       ├─ CartItem (por cada producto)
+│       │       └─ OrderSummary (Subtotal, IVA, Total, Descuento)
+│       │
+│       ├─ Step = "details"
+│       │   └─ OrderDetailsForm
+│       │       ├─ Formulario de datos del cliente
+│       │       ├─ Método de pago
+│       │       ├─ Notas adicionales
+│       │       └─ OrderSummary (Resumen lateral)
+│       │
+│       └─ Step = "confirmation"
+│           └─ OrderConfirmation
+│               ├─ Icono de confirmación
+│               ├─ Datos del pedido (Cliente, Teléfono, Dirección, Método de Pago, Notas)
+│               └─ Botones de navegación (Inicio / Ordenar de nuevo)
+│
+└─ EmptyCart (Se muestra si no hay items en el carrito)
+
+RESUMEN
+
+OrderPage controla el estado general: items del carrito, step actual (cart | details | confirmation) y datos del formulario.
+
+OrderSteps refleja visualmente el progreso del pedido.
+
+OrderCart y OrderDetailsForm comparten OrderSummary para mostrar precios.
+
+AnimatePresence maneja la animación de entrada/salida de los pasos.
+
+EmptyCart se muestra condicionalmente cuando no hay productos.
+
+OrderConfirmation muestra la información final y confirma el pedido.
+
+IMPORTANTE
+
+Todos los componentes usan dark mode y light mode de forma consistente (dark:).
+
+OrderDetailsForm y OrderCart manejan subtotal, IVA y total de forma memoizada para eficiencia.
+
+OrderContainer define el layout y padding global de la página.
+
+Los botones de OrderCart y OrderDetailsForm avanzan entre pasos usando callbacks (onProceed / goBack).
+
+-------------
+/pages/errors : 
+
+FallbackPage para errores 500.
+NotFoundPage para errores 404.
+ErrorBoundary capturando todo lo inesperado.

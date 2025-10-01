@@ -1,0 +1,68 @@
+import { Product } from "../types";
+
+export const desserts: Product[] = [
+  {
+    id: "ds1",
+    name: "Tiramisú",
+    description: "Postre italiano con café y crema mascarpone.",
+    image: "/images/desserts/ds01-dessert01.jpg",
+    price: 4.99,
+    category: "Postres",
+  },
+  {
+    id: "ds2",
+    name: "Helado de Vainilla",
+    description: "Clásico helado de vainilla cremosa.",
+    image: "/images/desserts/ds02-dessert02.jpg",
+    price: 3.99,
+    category: "Postres",
+  },
+  {
+    id: "ds3",
+    name: "Tiramisú",
+    description: "Postre italiano con café y crema mascarpone.",
+    image: "/images/desserts/ds03-dessert03.jpg",
+    price: 4.99,
+    category: "Postres",
+  },
+  {
+    id: "ds4",
+    name: "Helado de Vainilla",
+    description: "Clásico helado de vainilla cremosa.",
+    image: "/images/desserts/ds04-dessert04.jpg",
+    price: 3.99,
+    category: "Postres",
+  },
+  {
+    id: "ds5",
+    name: "Tiramisú",
+    description: "Postre italiano con café y crema mascarpone.",
+    image: "/images/desserts/ds05-dessert05.jpg",
+    price: 4.99,
+    category: "Postres",
+  },
+  {
+    id: "ds6",
+    name: "Helado de Vainilla",
+    description: "Clásico helado de vainilla cremosa.",
+    image: "/images/desserts/ds06-dessert06.jpg",
+    price: 3.99,
+    category: "Postres",
+  },
+  {
+    id: "ds7",
+    name: "Helado de Vainilla",
+    description: "Clásico helado de vainilla cremosa.",
+    image: "/images/desserts/ds07-dessert07.jpg",
+    price: 3.99,
+    category: "Postres",
+  },
+  {
+    id: "ds8",
+    name: "Helado de Vainilla",
+    description: "Clásico helado de vainilla cremosa.",
+    image: "/images/desserts/ds08-dessert08.jpg",
+    price: 3.99,
+    category: "Postres",
+  },
+];
