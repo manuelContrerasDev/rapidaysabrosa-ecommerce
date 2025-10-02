@@ -89,7 +89,7 @@ const CatalogPage: React.FC = () => {
       <div
         id="products-separator"
         ref={productsRef}
-        className="container-custom border-t border-white dark:border-gray-700 mt-6 mb-4 gap-4"
+        className="container-custom border-t border-white dark:border-gray-900 mt-6 mb-4 gap-4"
       />
 
       {/* Título catálogo */}

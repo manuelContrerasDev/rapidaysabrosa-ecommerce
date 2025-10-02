@@ -14,6 +14,10 @@
   .font-fire {
     font-family: 'Bangers', cursive;
   }
+
+  .font-fire-noncursive {
+    font-family: 'Bangers', serif;
+  }
   
   h1, h2, h3, h4 {
     @apply font-heading;

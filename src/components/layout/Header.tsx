@@ -87,7 +87,7 @@ const Header: React.FC = () => {
           </Link>
 
           {/* Desktop nav */}
-          <nav role="navigation" aria-label="Menú principal" className="hidden md:flex items-center h-full gap-2">
+          <nav role="navigation" aria-label="Menú principal" className="hidden md:flex items-center h-full">
             {navLinks.map(({ title, path, icon: Icon }) => {
               const active = isActive(path);
               return (
@@ -95,7 +95,8 @@ const Header: React.FC = () => {
                   key={path}
                   to={path}
                   aria-current={active ? "page" : undefined}
-                  className={`relative flex items-center gap-2 h-full px-3 py-2 rounded-md font-medium transition-colors duration-300 ${
+                  className={`relative flex items-center gap-1 h-full px-3 py-2 rounded-md font-medium transition-colors duration-300
+                    text-2xl md:text-2xl font-fire select-none ${
                     active
                       ? isDarkMode ? "text-black" : "text-white"
                       : isDarkMode ? "text-white hover:text-yellow-300" : "text-black hover:text-yellow-700"
@@ -134,13 +135,13 @@ const Header: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className={`absolute top-full left-0 w-full py-4 md:hidden backdrop-blur-sm border-t border-white/30 rounded-b-xl overflow-hidden
+            className={`absolute top-full left-0 w-full py-2 md:hidden backdrop-blur-sm border-t text-dark dark:text-white border-white/30 rounded-b-xl overflow-hidden
               ${isDarkMode
                 ? "bg-gray-900/95"
                 : "bg-white/95"}
             `}
           >
-            <div className="flex flex-col w-full px-4 space-y-2">
+            <div className="flex flex-col w-full px-4 space-y-1">
               {navLinks.map(({ title, path, icon: Icon }) => {
                 const active = isActive(path);
                 return (
@@ -149,10 +150,10 @@ const Header: React.FC = () => {
                     to={path}
                     onClick={closeMenu}
                     aria-current={active ? "page" : undefined}
-                    className={`flex items-center justify-center gap-2 w-full px-4 py-2 rounded-md font-medium ${
+                    className={`flex items-center justify-center gap-2 w-full px-4 pb-1 rounded-md font-medium ${
                       active
-                        ? "bg-yellow-400 text-black"
-                        : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                        ? "bg-yellow-300 text-black"
+                        : "hover:bg-gray-400 dark:hover:bg-gray-700"
                     }`}
                   >
                     <Icon size={18} aria-hidden="true" />

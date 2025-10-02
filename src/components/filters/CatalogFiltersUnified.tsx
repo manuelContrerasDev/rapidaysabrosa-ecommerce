@@ -33,7 +33,7 @@ const CatalogFiltersUnified: React.FC<CatalogFiltersUnifiedProps> = ({
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className={`sticky top-14 z-40 w-full max-w-7xl mx-auto px-2 md:px-4 py-1 md:py-2 
+      className={`sticky top-14 z-40 w-full max-w-7xl mx-auto px-2 md:px-4 md:py-2 
         transition-all duration-200 border-b border-gray-200 dark:border-gray-700
         ${scrolled ? "backdrop-blur-md shadow-sm" : "backdrop-blur-md"}`}
     >
