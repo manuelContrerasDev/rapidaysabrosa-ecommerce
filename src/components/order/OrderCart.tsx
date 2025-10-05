@@ -1,39 +1,33 @@
-import React, { useMemo } from "react";
+// src/components/order/OrderCart.tsx
+import React from "react";
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import CartItem from "../ui/CartItem";
 import OrderSummary from "./OrderSummary";
 import { CATALOG } from "../../routes/paths";
 import { useCart } from "../../context/CartContext";
+import { useCartTotal } from "../../hooks/useCartTotal";
 
 interface OrderCartProps {
-  onProceed: () => void; // Callback para avanzar al checkout
-  discount?: number; // opcional, default 0
+  onProceed: () => void;
+  discount?: number;
 }
 
 /**
- * Componente que muestra los items del carrito.
- * Incluye resumen de totales y botón para continuar al checkout.
+ * Lista items del carrito + resumen + CTA checkout.
+ * Totales centralizados con useCartTotal para evitar duplicación.
  */
 const OrderCart: React.FC<OrderCartProps> = ({ onProceed, discount = 0 }) => {
   const { items } = useCart();
   const isEmpty = items.length === 0;
 
-  // Calculamos subtotal, IVA y total
-  const subtotal = useMemo(
-    () => items.reduce((acc, item) => acc + item.price * item.quantity, 0),
-    [items]
-  );
-  const tax = useMemo(() => subtotal * 0.19, [subtotal]);
-  const total = useMemo(() => subtotal + tax - discount, [subtotal, tax, discount]);
+  const { subtotal, tax, total } = useCartTotal(0.19, discount);
 
   if (isEmpty) {
     return (
       <div className="text-center py-8" role="status" aria-live="polite">
         <ShoppingCart size={48} className="mx-auto mb-4 text-gray-400" aria-hidden="true" />
-        <h3 className="text-xl font-medium mb-2 text-gray-900 dark:text-white">
-          Tu carrito está vacío
-        </h3>
+        <h3 className="text-xl font-medium mb-2 text-gray-900 dark:text-white">Tu carrito está vacío</h3>
         <p className="text-gray-600 dark:text-gray-300 mb-6">
           Parece que aún no has agregado productos a tu pedido.
         </p>
@@ -48,24 +42,15 @@ const OrderCart: React.FC<OrderCartProps> = ({ onProceed, discount = 0 }) => {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Lista de productos */}
       <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-card p-6 space-y-4">
-        {items.map(item => (
+        {items.map((item) => (
           <CartItem key={item.id} item={item} />
         ))}
       </div>
 
       {/* Resumen y botón */}
       <div className="flex flex-col gap-4">
-        <OrderSummary
-          items={items}
-          subtotal={subtotal}
-          tax={tax}
-          discount={discount}
-          total={total}
-        />
-        <button
-          className="btn btn-primary w-full mt-2"
-          onClick={onProceed}
-        >
+        <OrderSummary items={items} subtotal={subtotal} tax={tax} discount={discount} total={total} />
+        <button className="btn btn-primary w-full mt-2" onClick={onProceed}>
           Continuar al Checkout
         </button>
       </div>

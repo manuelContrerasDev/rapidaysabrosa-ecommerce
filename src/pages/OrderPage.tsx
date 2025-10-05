@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// src/pages/OrderPage.tsx
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShoppingCart } from "lucide-react";
@@ -13,9 +14,6 @@ import OrderDetailsForm from "../components/order/OrderDetailsForm";
 import OrderSummary from "../components/order/OrderSummary";
 import OrderConfirmation from "../components/order/OrderConfirmation";
 
-/**
- * Componente para mostrar carrito vacío.
- */
 const EmptyCart: React.FC = () => (
   <motion.div
     key="empty"
@@ -33,27 +31,29 @@ const EmptyCart: React.FC = () => (
     <p className="text-gray-600 dark:text-gray-300 mb-6">
       Aún no has agregado productos a tu pedido.
     </p>
-    <Link
-      to="/catalog"
-      className="btn btn-primary px-6 py-3 font-semibold rounded-lg"
-    >
+    <Link to="/catalog" className="btn btn-primary px-6 py-3 font-semibold rounded-lg">
       Explorar Nuestro Menú
     </Link>
   </motion.div>
 );
 
+// Util opcional para un código de pedido “amigable”
+const genOrderCode = () => {
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, ""); // yyyymmdd
+  return `RS-${date}-${uuidv4().slice(0, 6).toUpperCase()}`;
+};
+
 /**
- * Página de pedido.
- * Maneja flujo de carrito → formulario → confirmación.
+ * Página de pedido: carrito → formulario → confirmación.
  */
 const OrderPage: React.FC = () => {
   const { items, clearCart } = useCart();
   const { subtotal, tax, discount, total } = useCartTotal(0.19, 0); // IVA 19%, sin descuento
 
-  // 🔹 Estado de pasos del flujo
   const [step, setStep] = useState<"cart" | "details" | "confirmation">("cart");
+  const [orderId, setOrderId] = useState("");
 
-  // 🔹 Estado del formulario de pedido
+  // Form state
   const [form, setForm] = useState({
     customerName: "",
     contactNumber: "",
@@ -61,52 +61,59 @@ const OrderPage: React.FC = () => {
     paymentMethod: "cash" as "cash" | "card" | "online",
     notes: "",
   });
-
-  // 🔹 Errores de validación
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
-  // 🔹 ID de pedido generado
-  const [orderId, setOrderId] = useState("");
-
-  /**
-   * Actualiza campos del formulario.
-   * @param e Evento de input/select/textarea
-   */
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
-
-  /**
-   * Envía formulario de pedido.
-   * Valida campos obligatorios y formato de teléfono.
-   * Genera orderId y limpia carrito.
-   */
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const errors: Record<string, string> = {};
-
-    if (!form.customerName) errors.customerName = "Nombre requerido";
-
-    // Validación básica de teléfono: solo números y mínimo 7 dígitos
-    if (!form.contactNumber || !/^\d{7,}$/.test(form.contactNumber)) {
-      errors.contactNumber = "Número válido requerido";
+  // Guard: si estoy en details y se vacía el carrito, vuelve a cart (pero nunca interrumpas confirmation)
+  useEffect(() => {
+    if (step !== "confirmation" && items.length === 0) {
+      setStep("cart");
     }
+  }, [items.length, step]);
 
-    if (!form.deliveryAddress) errors.deliveryAddress = "Dirección requerida";
+  // Mejora UX: scroll top al cambiar de step
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [step]);
 
-    if (Object.keys(errors).length > 0) {
-      setValidationErrors(errors);
-      return;
-    }
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+      const { name, value } = e.target;
+      setForm((prev) => ({ ...prev, [name]: value }));
+    },
+    []
+  );
 
-    // Genera ID único de pedido
-    setOrderId(uuidv4());
-    setStep("confirmation");
-    clearCart();
-  };
+  const canProceedToDetails = useMemo(() => items.length > 0, [items.length]);
 
-  /** Regresa al paso de carrito desde formulario */
-  const goBackToCart = () => setStep("cart");
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      const errors: Record<string, string> = {};
+
+      if (!form.customerName.trim()) errors.customerName = "Nombre requerido";
+
+      // Chile: si vas a endurecer validación más adelante, puedes usar una regex +56 9 XXXXXXXX:
+      // const chilePhone = /^(?:\+?56)?\s?(?:0?9)\d{8}$/;
+      if (!form.contactNumber || !/^\d{7,}$/.test(form.contactNumber)) {
+        errors.contactNumber = "Número válido requerido";
+      }
+
+      if (!form.deliveryAddress.trim()) errors.deliveryAddress = "Dirección requerida";
+
+      if (Object.keys(errors).length > 0) {
+        setValidationErrors(errors);
+        return;
+      }
+
+      const code = genOrderCode();
+      setOrderId(code);
+      setStep("confirmation");
+      clearCart(); // ← Ya no rompe la UI porque confirmación no depende de items
+    },
+    [form, clearCart]
+  );
+
+  const goBackToCart = useCallback(() => setStep("cart"), []);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -114,45 +121,51 @@ const OrderPage: React.FC = () => {
         <h1 className="sr-only">Página de Pedido</h1>
         <OrderSteps currentStep={step} />
 
-        <AnimatePresence mode="wait">
-          {items.length === 0 ? (
-            <EmptyCart />
-          ) : (
+        <AnimatePresence mode="wait" initial={false}>
+          {/* Renderiza por step: evita que el carrito vacío tape la confirmación */}
+          {step === "cart" && (
             <motion.div
-              key={step}
+              key="cart"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
             >
-              {/* Paso 1: Carrito */}
-              {step === "cart" && (
+              {items.length === 0 ? (
+                <EmptyCart />
+              ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-card p-6 space-y-4">
-                    {items.map(item => (
+                    {items.map((item) => (
                       <CartItem key={item.id} item={item} />
                     ))}
                   </div>
 
                   <div className="flex flex-col gap-4">
-                    <OrderSummary
-                      items={items}
-                      subtotal={subtotal}
-                      tax={tax}
-                      discount={discount}
-                      total={total}
-                    />
+                    <OrderSummary items={items} subtotal={subtotal} tax={tax} discount={discount} total={total} />
                     <button
                       className="btn btn-primary w-full mt-2"
                       onClick={() => setStep("details")}
+                      disabled={!canProceedToDetails}
                     >
                       Pagar
                     </button>
                   </div>
                 </div>
               )}
+            </motion.div>
+          )}
 
-              {/* Paso 2: Formulario */}
-              {step === "details" && (
+          {step === "details" && (
+            <motion.div
+              key="details"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+            >
+              {items.length === 0 ? (
+                // Guard extra (por si el carrito se vació aquí)
+                <EmptyCart />
+              ) : (
                 <OrderDetailsForm
                   form={form}
                   validationErrors={validationErrors}
@@ -161,11 +174,17 @@ const OrderPage: React.FC = () => {
                   goBack={goBackToCart}
                 />
               )}
+            </motion.div>
+          )}
 
-              {/* Paso 3: Confirmación */}
-              {step === "confirmation" && (
-                <OrderConfirmation orderId={orderId} form={form} />
-              )}
+          {step === "confirmation" && (
+            <motion.div
+              key="confirmation"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+            >
+              <OrderConfirmation orderId={orderId} form={form} />
             </motion.div>
           )}
         </AnimatePresence>

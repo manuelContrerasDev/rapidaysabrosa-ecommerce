@@ -58,7 +58,27 @@ export default {
           DEFAULT: '#4A6C6F',
           dark: '#2A4A4D'
         },
+
+        // 🎨 Paleta de marca Rapida&Sabrosa
+        brand: {
+          red: {
+            DEFAULT: "#c1121f",   // Rojo principal
+            dark: "#780000",      // Rojo oscuro
+            light: "#ef233c",     // Rojo claro
+          },
+          yellow: {
+            DEFAULT: "#ffb703",   // Amarillo vibrante
+            dark: "#ff9900",      // Amarillo oscuro
+            light: "#ffd166",     // Amarillo claro
+          },
+          black: {
+            DEFAULT: "#000000",   // Negro puro
+            soft: "#1a1a1a",      // Negro suave
+            light: "#333333",     // Gris oscuro
+          },
+        },
       },
+
       fontFamily: {
         display: ['Bungee', 'cursive'],
         heading: ['Righteous', 'cursive'],
@@ -67,17 +87,27 @@ export default {
         playfair: ["Playfair Display", "serif"],
         lobster: ["Lobster", "cursive"],
       },
+
       boxShadow: {
         card: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         hover: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
       },
-      backgroundImage: {
+
+      backgroundImage: theme => ({
         'pizza-pattern': "url('https://images.pexels.com/photos/3682838/pexels-photo-3682838.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260')",
         'tomato-pattern': "url('https://images.pexels.com/photos/1435904/pexels-photo-1435904.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260')",
         'wood-pattern': "url('https://images.pexels.com/photos/129733/pexels-photo-129733.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260')",
         'hero-pizza': "url('/images/pizza-hero.jpeg')",
-      },
-      // 👇 Aquí viene la animación
+
+        // 🌈 Gradientes personalizados
+        'gradient-brand': `linear-gradient(to right, ${theme("colors.brand.red.DEFAULT")}, ${theme("colors.brand.black.DEFAULT")}, ${theme("colors.brand.yellow.DEFAULT")})`,
+        'gradient-brand-dark': `linear-gradient(to right, ${theme("colors.brand.yellow.dark")}, ${theme("colors.brand.red.dark")}, ${theme("colors.brand.black.soft")})`,
+        'gradient-red-yellow': `linear-gradient(to right, ${theme("colors.brand.red.DEFAULT")}, ${theme("colors.brand.yellow.DEFAULT")})`,
+        'gradient-yellow-red': `linear-gradient(to right, ${theme("colors.brand.yellow.DEFAULT")}, ${theme("colors.brand.red.DEFAULT")})`,
+        'gradient-black-red': `linear-gradient(to right, ${theme("colors.brand.black.DEFAULT")}, ${theme("colors.brand.red.DEFAULT")})`,
+      }),
+
+      // Animaciones
       keyframes: {
         fadeInUp: {
           '0%': { opacity: '0', transform: 'translateY(20px)' },

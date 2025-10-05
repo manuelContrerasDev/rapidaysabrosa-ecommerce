@@ -12,7 +12,7 @@ export const pizzas: Pizza[] = [
     name: "Peperoni Clásica",
     description: "La clásica pizza italiana con salsa de tomate y mozzarella fresca.",
     image: "/images/pizzas/p1-pizzas01.jpeg",
-    price: 9.99,
+    price: 9999,
     sizes: pizzaSizes,
     ingredients: ["Salsa de Tomate", "Mozzarella", "Albahaca"],
     category: "Pizzas",

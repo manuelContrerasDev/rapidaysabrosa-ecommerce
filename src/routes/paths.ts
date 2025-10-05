@@ -12,3 +12,5 @@ export const PATHS = {
 // Tipado automático de las rutas
 export type PathKey = keyof typeof PATHS;
 export type PathValue = (typeof PATHS)[PathKey];
+export const CATALOG = "/catalog";
+

@@ -1,3 +1,4 @@
+// src/components/order/OrderSteps.tsx
 import React from "react";
 import { ShoppingCart, CreditCard, Check } from "lucide-react";
 
@@ -12,8 +13,7 @@ const steps = [
 ] as const;
 
 /**
- * Componente que muestra el progreso de los pasos del pedido.
- * Resalta el paso actual y marca los pasos completados.
+ * Indicador de progreso de 3 pasos.
  */
 const OrderSteps: React.FC<OrderStepsProps> = ({ currentStep }) => {
   const currentIndex = steps.findIndex((step) => step.id === currentStep);
@@ -29,19 +29,22 @@ const OrderSteps: React.FC<OrderStepsProps> = ({ currentStep }) => {
           return (
             <li key={step.id} className="flex flex-col items-center relative flex-1">
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center text-white transition-colors duration-300
-                  ${isActive ? "bg-primary-600" : isCompleted ? "bg-primary-400" : "bg-gray-300 dark:bg-gray-700"}`}
+                className={`w-10 h-10 rounded-full flex items-center justify-center text-white transition-colors duration-300 ${
+                  isActive ? "bg-primary-600" : isCompleted ? "bg-primary-400" : "bg-gray-300 dark:bg-gray-700"
+                }`}
+                aria-current={isActive ? "step" : undefined}
               >
                 <Icon size={18} />
               </div>
-              <span className="text-sm mt-2 text-gray-900 dark:text-white text-center">
-                {step.label}
-              </span>
+              <span className="text-sm mt-2 text-gray-900 dark:text-white text-center">{step.label}</span>
+
               {index < steps.length - 1 && (
                 <div
-                  className={`absolute top-1/2 left-full h-1 -translate-y-1/2 bg-gray-300 dark:bg-gray-600
-                    ${isCompleted ? "bg-primary-400" : ""}`}
+                  className={`absolute top-1/2 left-full h-1 -translate-y-1/2 ${
+                    isCompleted ? "bg-primary-400" : "bg-gray-300 dark:bg-gray-600"
+                  }`}
                   style={{ width: "100%" }}
+                  aria-hidden="true"
                 />
               )}
             </li>

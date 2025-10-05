@@ -1,14 +1,16 @@
-import React from 'react';
-import { ArrowLeft, CreditCard, DollarSign } from 'lucide-react';
-import { useCart } from '../../context/CartContext';
-import OrderSummary from './OrderSummary';
+// src/components/order/OrderDetailsForm.tsx
+import React from "react";
+import { ArrowLeft, CreditCard, DollarSign } from "lucide-react";
+import { useCart } from "../../context/CartContext";
+import OrderSummary from "./OrderSummary";
+import { useCartTotal } from "../../hooks/useCartTotal";
 
 interface OrderDetailsFormProps {
   form: {
     customerName: string;
     contactNumber: string;
     deliveryAddress: string;
-    paymentMethod: 'cash' | 'card' | 'online';
+    paymentMethod: "cash" | "card" | "online";
     notes: string;
   };
   validationErrors: Partial<{
@@ -23,10 +25,14 @@ interface OrderDetailsFormProps {
   goBack: () => void;
 }
 
+const PAYMENT_OPTIONS = [
+  { value: "cash", label: "Efectivo", icon: DollarSign },
+  { value: "card", label: "Débito", icon: CreditCard },
+  { value: "online", label: "Pago en Línea", icon: CreditCard },
+] as const;
+
 /**
- * Formulario de detalles de entrega y pago.
- * Muestra campos de información del cliente, métodos de pago y notas opcionales.
- * Incluye resumen lateral del pedido.
+ * Formulario de entrega + pago + notas con resumen lateral.
  */
 const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
   form,
@@ -36,10 +42,7 @@ const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
   goBack,
 }) => {
   const { items } = useCart();
-
-  const subtotal = items.reduce((acc, i) => acc + i.price * i.quantity, 0);
-  const tax = subtotal * 0.19;
-  const total = subtotal + tax;
+  const { subtotal, tax, total } = useCartTotal(0.19, 0);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -49,29 +52,33 @@ const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
         className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-card p-6"
         noValidate
       >
-        <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-          Detalles de Entrega
-        </h2>
+        <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Detalles de Entrega</h2>
 
         {/* Nombre y Contacto */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {[
-            { id: 'customerName', label: 'Nombre Completo', type: 'text', error: validationErrors.customerName },
-            { id: 'contactNumber', label: 'Número de Contacto', type: 'tel', error: validationErrors.contactNumber },
-          ].map(field => (
+            { id: "customerName", label: "Nombre Completo", type: "text", error: validationErrors.customerName },
+            { id: "contactNumber", label: "Número de Contacto", type: "tel", error: validationErrors.contactNumber },
+          ].map((field) => (
             <div key={field.id}>
-              <label htmlFor={field.id} className="form-label">{field.label}</label>
+              <label htmlFor={field.id} className="form-label">
+                {field.label}
+              </label>
               <input
                 type={field.type}
                 id={field.id}
                 name={field.id}
-                className={`form-input ${field.error ? 'border-red-500' : ''}`}
+                className={`form-input ${field.error ? "border-red-500" : ""}`}
                 value={form[field.id as keyof typeof form]}
                 onChange={handleInputChange}
                 placeholder={field.label}
+                aria-invalid={!!field.error}
+                aria-describedby={field.error ? `${field.id}-error` : undefined}
               />
               {field.error && (
-                <p className="text-red-500 text-sm mt-1">{field.error}</p>
+                <p id={`${field.id}-error`} className="text-red-500 text-sm mt-1">
+                  {field.error}
+                </p>
               )}
             </div>
           ))}
@@ -79,18 +86,24 @@ const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
 
         {/* Dirección */}
         <div className="mb-8">
-          <label htmlFor="deliveryAddress" className="form-label">Dirección de Entrega</label>
+          <label htmlFor="deliveryAddress" className="form-label">
+            Dirección de Entrega
+          </label>
           <input
             type="text"
             id="deliveryAddress"
             name="deliveryAddress"
-            className={`form-input ${validationErrors.deliveryAddress ? 'border-red-500' : ''}`}
+            className={`form-input ${validationErrors.deliveryAddress ? "border-red-500" : ""}`}
             value={form.deliveryAddress}
             onChange={handleInputChange}
             placeholder="Dirección, apartamento, edificio, etc."
+            aria-invalid={!!validationErrors.deliveryAddress}
+            aria-describedby={validationErrors.deliveryAddress ? "deliveryAddress-error" : undefined}
           />
           {validationErrors.deliveryAddress && (
-            <p className="text-red-500 text-sm mt-1">{validationErrors.deliveryAddress}</p>
+            <p id="deliveryAddress-error" className="text-red-500 text-sm mt-1">
+              {validationErrors.deliveryAddress}
+            </p>
           )}
         </div>
 
@@ -98,11 +111,7 @@ const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
         <div className="mb-8">
           <h3 className="form-label">Método de Pago</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-            {[
-              { value: 'cash', label: 'Efectivo', icon: DollarSign },
-              { value: 'card', label: 'Débito', icon: CreditCard },
-              { value: 'online', label: 'Pago en Línea', icon: CreditCard },
-            ].map(payment => {
+            {PAYMENT_OPTIONS.map((payment) => {
               const Icon = payment.icon;
               const active = form.paymentMethod === payment.value;
               return (
@@ -110,8 +119,8 @@ const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
                   key={payment.value}
                   className={`flex items-center border rounded-lg p-4 cursor-pointer transition-all ${
                     active
-                      ? 'border-primary-500 bg-primary-50 dark:bg-primary-900'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
+                      ? "border-primary-500 bg-primary-50 dark:bg-primary-900"
+                      : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
                   }`}
                 >
                   <input
@@ -132,7 +141,9 @@ const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
 
         {/* Notas */}
         <div className="mb-8">
-          <label htmlFor="notes" className="form-label">Notas Adicionales (opcional)</label>
+          <label htmlFor="notes" className="form-label">
+            Notas Adicionales (opcional)
+          </label>
           <textarea
             id="notes"
             name="notes"
@@ -153,19 +164,14 @@ const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
             <ArrowLeft size={18} className="mr-2" />
             Volver al Carrito
           </button>
-          <button type="submit" className="btn btn-primary flex-grow">Realizar Pedido</button>
+          <button type="submit" className="btn btn-primary flex-grow">
+            Realizar Pedido
+          </button>
         </div>
       </form>
 
       {/* Resumen lateral */}
-      <OrderSummary
-        items={items}
-        subtotal={subtotal}
-        tax={tax}
-        discount={0}
-        total={total}
-        className="sticky top-24"
-      />
+      <OrderSummary items={items} subtotal={subtotal} tax={tax} discount={0} total={total} className="sticky top-24" />
     </div>
   );
 };
