@@ -1,6 +1,7 @@
 // src/routes/index.tsx
 import { lazy } from "react";
 import React from "react";
+
 import { PATHS } from "./paths";
 
 // Lazy loading de páginas

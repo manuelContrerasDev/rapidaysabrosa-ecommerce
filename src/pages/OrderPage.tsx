@@ -1,18 +1,18 @@
 // src/pages/OrderPage.tsx
-import React, { useEffect, useMemo, useState, useCallback } from "react";
-import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShoppingCart } from "lucide-react";
+import React, { useCallback,useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
+import OrderConfirmation from "../components/order/OrderConfirmation";
+import OrderContainer from "../components/order/OrderContainer";
+import OrderDetailsForm from "../components/order/OrderDetailsForm";
+import OrderSteps from "../components/order/OrderSteps";
+import OrderSummary from "../components/order/OrderSummary";
+import CartItem from "../components/ui/CartItem";
 import { useCart } from "../context/CartContext";
 import { useCartTotal } from "../hooks/useCartTotal";
-import OrderContainer from "../components/order/OrderContainer";
-import OrderSteps from "../components/order/OrderSteps";
-import CartItem from "../components/ui/CartItem";
-import OrderDetailsForm from "../components/order/OrderDetailsForm";
-import OrderSummary from "../components/order/OrderSummary";
-import OrderConfirmation from "../components/order/OrderConfirmation";
 
 const EmptyCart: React.FC = () => (
   <motion.div

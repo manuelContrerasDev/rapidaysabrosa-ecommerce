@@ -1,8 +1,9 @@
 // src/components/layout/Header.tsx
-import React, { useState, useEffect, useCallback } from "react";
+import { AnimatePresence,motion } from "framer-motion";
+import { Home, List, Menu, Moon, Pizza, ShoppingCart,Sun, X } from "lucide-react";
+import React, { useCallback,useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Pizza, Moon, Sun, Home, List, ShoppingCart } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+
 import { useTheme } from "../../context/ThemeContext";
 import HeaderPizzaLeft from "../ui/HeaderPizzaLeft";
 import HeaderPizzaRight from "../ui/HeaderPizzaRight";

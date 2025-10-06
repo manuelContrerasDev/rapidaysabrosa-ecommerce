@@ -1,5 +1,6 @@
 // src/components/common/ErrorBoundary.tsx
 import React, { Component, ReactNode } from "react";
+
 import FallbackPage from "../../pages/errors/FallbackPage";
 
 interface ErrorBoundaryProps {

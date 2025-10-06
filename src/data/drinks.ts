@@ -6,7 +6,7 @@ export const drinks: Product[] = [
     name: "Coca Cola",
     description: "Bebida gaseosa clásica.",
     image: "/images/drinks/d1-bebida01.png",
-    price: 1.99,
+    price: 1500,
     category: "Bebidas",
   },
   {
@@ -14,7 +14,7 @@ export const drinks: Product[] = [
     name: "Agua Mineral",
     description: "Agua purificada y natural.",
     image: "/images/drinks/d2-juice01.jpg",
-    price: 1.5,
+    price: 1500,
     category: "Bebidas",
   },
   {
@@ -22,7 +22,7 @@ export const drinks: Product[] = [
     name: "Jugo Natural",
     description: "Agua purificada y natural.",
     image: "/images/drinks/d2-juice02.jpg",
-    price: 1.5,
+    price: 3000,
     category: "Bebidas",
   },
   {
@@ -30,7 +30,7 @@ export const drinks: Product[] = [
     name: "Coca Cola",
     description: "Bebida gaseosa clásica.",
     image: "/images/drinks/d1-cocacola.png",
-    price: 1.99,
+    price: 9999,
     category: "Bebidas",
   },
   {
@@ -38,7 +38,7 @@ export const drinks: Product[] = [
     name: "Agua Mineral",
     description: "Agua purificada y natural.",
     image: "/images/drinks/agua.jpg",
-    price: 1.5,
+    price: 9999,
     category: "Bebidas",
   },
   {
@@ -46,7 +46,7 @@ export const drinks: Product[] = [
     name: "Jugo Natural",
     description: "Agua purificada y natural.",
     image: "/images/drinks/agua.jpg",
-    price: 1.5,
+    price: 9999,
     category: "Bebidas",
   },
 ];

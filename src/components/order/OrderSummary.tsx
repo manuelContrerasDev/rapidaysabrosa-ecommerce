@@ -1,7 +1,8 @@
 // src/components/order/OrderSummary.tsx
 import React from "react";
+
 import { CartItem } from "../../types";
-import { clp } from "../../types";
+import { clp } from "../../utils/currency";
 
 interface OrderSummaryProps {
   items: CartItem[];

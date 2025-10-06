@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect,useState } from 'react';
 
 interface ThemeContextType {
   isDarkMode: boolean;
@@ -27,7 +27,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   useEffect(() => {
     localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
-    
+
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
     } else {

@@ -1,10 +1,10 @@
 // src/components/layout/Layout.tsx
-import React, { useEffect, Suspense } from "react";
 import { AnimatePresence } from "framer-motion";
+import React, { Suspense,useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-import Header from "./Header";
 import Footer from "./Footer";
+import Header from "./Header";
 import OutletWrapper from "./OutletWrapper";
 
 const Layout: React.FC = () => {

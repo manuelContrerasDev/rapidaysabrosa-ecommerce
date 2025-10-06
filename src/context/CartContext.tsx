@@ -1,9 +1,11 @@
+/* eslint no-unused-vars: off */ // Desactiva la base; usamos @typescript-eslint/no-unused-vars
 import React, {
   createContext,
   useContext,
-  useState,
   useEffect,
   useMemo,
+  useState,
+  useCallback,
 } from "react";
 import { CartItem } from "../types";
 
@@ -36,13 +38,11 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     try {
       const savedCart = localStorage.getItem("cart");
       return savedCart ? JSON.parse(savedCart) : [];
-    } catch (error) {
-      console.error("❌ Error leyendo carrito de localStorage:", error);
+    } catch {
       return [];
     }
   });
 
-  // 🔹 Cálculos memoizados
   const totalItems = useMemo(
     () => items.reduce((acc, item) => acc + item.quantity, 0),
     [items]
@@ -53,23 +53,20 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     [items]
   );
 
-  // 🔹 Persistencia en localStorage
   useEffect(() => {
     try {
       localStorage.setItem("cart", JSON.stringify(items));
-    } catch (error) {
-      console.error("❌ Error guardando carrito en localStorage:", error);
+    } catch {
+      // noop
     }
   }, [items]);
 
-  // 🔹 Sincronización entre pestañas
   useEffect(() => {
     const handleStorage = (e: StorageEvent) => {
       if (e.key === "cart") {
         try {
           setItems(e.newValue ? JSON.parse(e.newValue) : []);
-        } catch (error) {
-          console.error("❌ Error sincronizando carrito:", error);
+        } catch {
           setItems([]);
         }
       }
@@ -78,32 +75,39 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
-  // 🔹 Acciones
-  const addToCart = (newItem: CartItem) => {
+  const addToCart = useCallback((newItem: CartItem) => {
     setItems((prev) => {
       const uniqueId = `${newItem.productId}-${newItem.size || "default"}`;
       const existingIndex = prev.findIndex((item) => item.id === uniqueId);
 
       if (existingIndex >= 0) {
         const updated = [...prev];
-        updated[existingIndex].quantity += newItem.quantity;
+        updated[existingIndex] = {
+          ...updated[existingIndex],
+          quantity: updated[existingIndex].quantity + newItem.quantity,
+        };
         return updated;
       }
       return [...prev, { ...newItem, id: uniqueId }];
     });
-  };
+  }, []);
 
-  const removeFromCart = (id: string) =>
-    setItems((prev) => prev.filter((item) => item.id !== id));
+  const removeFromCart = useCallback(
+    (id: string) => setItems((prev) => prev.filter((item) => item.id !== id)),
+    []
+  );
 
-  const updateQuantity = (id: string, quantity: number) => {
-    if (quantity <= 0) return removeFromCart(id);
-    setItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
-  };
+  const updateQuantity = useCallback(
+    (id: string, quantity: number) => {
+      if (quantity <= 0) return removeFromCart(id);
+      setItems((prev) =>
+        prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+      );
+    },
+    [removeFromCart]
+  );
 
-  const clearCart = () => setItems([]);
+  const clearCart = useCallback(() => setItems([]), []);
 
   return (
     <CartContext.Provider

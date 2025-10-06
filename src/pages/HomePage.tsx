@@ -1,10 +1,11 @@
 // src/pages/HomePage.tsx
+import { motion, useSpring,useTransform, useViewportScroll } from "framer-motion";
+import { Clock, Pizza as PizzaIcon,Star, Truck } from "lucide-react";
 import React from "react";
-import { pizzas } from "../data/pizzas";
-import { motion, useViewportScroll, useTransform, useSpring } from "framer-motion";
-import Button from "../components/ui/Button";
-import { Star, Truck, Clock, Pizza as PizzaIcon } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+
+import Button from "../components/ui/Button";
+import { pizzas } from "../data/pizzas";
 
 const HomePage: React.FC = () => {
   const { scrollY } = useViewportScroll();

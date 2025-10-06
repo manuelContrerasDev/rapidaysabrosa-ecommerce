@@ -1,9 +1,10 @@
-import { Pizza } from "../types";
+import { Pizza, PizzaSize  } from "../types";
 
-const pizzaSizes = [
-  { name: "Chica", size: 25, priceModifier: 0 },
-  { name: "Mediana", size: 30, priceModifier: 2 },
-  { name: "Familiar", size: 35, priceModifier: 4 },
+/* Para futuras medidas de pizzas*/
+const pizzaSizes: PizzaSize[] = [
+  //{ name: "Chica", size: 25, priceModifier: 0 },
+  //{ name: "Mediana", size: 30, priceModifier: 2000 },
+  //{ name: "Familiar", size: 35, priceModifier: 4000 },
 ];
 
 export const pizzas: Pizza[] = [
@@ -12,7 +13,7 @@ export const pizzas: Pizza[] = [
     name: "Peperoni Clásica",
     description: "La clásica pizza italiana con salsa de tomate y mozzarella fresca.",
     image: "/images/pizzas/p1-pizzas01.jpeg",
-    price: 9999,
+    price: 9999, // CLP entero
     sizes: pizzaSizes,
     ingredients: ["Salsa de Tomate", "Mozzarella", "Albahaca"],
     category: "Pizzas",
@@ -26,7 +27,7 @@ export const pizzas: Pizza[] = [
     name: "Pepperoni Clásica",
     description: "Pizza con pepperoni crujiente y queso mozzarella derretido.",
     image: "/images/pizzas/pizza-hero.jpeg",
-    price: 11.99,
+    price: 10999,
     sizes: pizzaSizes,
     ingredients: ["Salsa de Tomate", "Mozzarella", "Pepperoni"],
     category: "Pizzas",
@@ -40,7 +41,7 @@ export const pizzas: Pizza[] = [
     name: "Pepperoni",
     description: "Pizza con pepperoni crujiente y queso mozzarella derretido.",
     image: "/images/pizzas/p3-pizzas01.jpeg",
-    price: 11.99,
+    price: 11999,
     sizes: pizzaSizes,
     ingredients: ["Salsa de Tomate", "Mozzarella", "Pepperoni"],
     category: "Pizzas",
@@ -54,7 +55,7 @@ export const pizzas: Pizza[] = [
     name: "Pepperoni",
     description: "Pizza con pepperoni crujiente y queso mozzarella derretido.",
     image: "/images/pizzas/p4-pizzas01.jpeg",
-    price: 11.99,
+    price: 12999,
     sizes: pizzaSizes,
     ingredients: ["Salsa de Tomate", "Mozzarella", "Pepperoni"],
     category: "Pizzas",
@@ -68,7 +69,7 @@ export const pizzas: Pizza[] = [
     name: "Pepperoni",
     description: "Pizza con pepperoni crujiente y queso mozzarella derretido.",
     image: "/images/pizzas/p5-pizzas01.jpeg",
-    price: 11.99,
+    price: 13999,
     sizes: pizzaSizes,
     ingredients: ["Salsa de Tomate", "Mozzarella", "Pepperoni"],
     category: "Pizzas",
@@ -82,7 +83,7 @@ export const pizzas: Pizza[] = [
     name: "Pepperoni",
     description: "Pizza con pepperoni crujiente y queso mozzarella derretido.",
     image: "/images/pizzas/p6-pizzas01.jpeg",
-    price: 11.99,
+    price: 14999,
     sizes: pizzaSizes,
     ingredients: ["Salsa de Tomate", "Mozzarella", "Pepperoni"],
     category: "Pizzas",

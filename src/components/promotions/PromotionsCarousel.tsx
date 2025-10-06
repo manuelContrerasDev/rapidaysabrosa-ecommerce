@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Tag, Clock } from "lucide-react";
+import { AnimatePresence,motion } from "framer-motion";
+import { ChevronLeft, ChevronRight, Clock,Tag } from "lucide-react";
+import React, { useEffect,useState } from "react";
+
 import { promotions } from "../../data/promotions";
 
 const PromotionsCarousel: React.FC = () => {

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Tag, Clock } from 'lucide-react';
+import { AnimatePresence,motion } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Clock,Tag } from 'lucide-react';
+import React, { useEffect,useState } from 'react';
+
 import { promotions } from '../../data/promotions';
 
 const PromotionsCarousel: React.FC = () => {
@@ -80,7 +81,7 @@ const PromotionsCarousel: React.FC = () => {
                         {activePromotions[currentSlide].discount}
                       </span>
                     </div>
-                    
+
                     <h3 className="text-xl md:text-2xl font-display text-white mb-2 drop-shadow-lg">
                       {activePromotions[currentSlide].title}
                     </h3>

@@ -1,7 +1,7 @@
-import React from 'react';
 import { motion } from "framer-motion";
 import { Pizza } from "lucide-react";
-import { useState, useEffect } from "react";
+import React, { useEffect,useState } from 'react';
+
 
 /**
  * Componente HeaderPizzaRight

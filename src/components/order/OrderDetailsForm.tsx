@@ -1,9 +1,8 @@
-// src/components/order/OrderDetailsForm.tsx
 import React from "react";
 import { ArrowLeft, CreditCard, DollarSign } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 import OrderSummary from "./OrderSummary";
-import { useCartTotal } from "../../hooks/useCartTotal";
+import { clp } from "../../utils/currency";
 
 interface OrderDetailsFormProps {
   form: {
@@ -18,22 +17,13 @@ interface OrderDetailsFormProps {
     contactNumber: string;
     deliveryAddress: string;
   }>;
-  handleInputChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => void;
-  handleSubmit: (e: React.FormEvent) => void;
+  handleInputChange: React.ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  >;
+  handleSubmit: React.FormEventHandler<HTMLFormElement>;
   goBack: () => void;
 }
 
-const PAYMENT_OPTIONS = [
-  { value: "cash", label: "Efectivo", icon: DollarSign },
-  { value: "card", label: "Débito", icon: CreditCard },
-  { value: "online", label: "Pago en Línea", icon: CreditCard },
-] as const;
-
-/**
- * Formulario de entrega + pago + notas con resumen lateral.
- */
 const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
   form,
   validationErrors,
@@ -42,7 +32,10 @@ const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
   goBack,
 }) => {
   const { items } = useCart();
-  const { subtotal, tax, total } = useCartTotal(0.19, 0);
+
+  const subtotal = items.reduce((acc, i) => acc + i.price * i.quantity, 0);
+  const tax = Math.round(subtotal * 0.19);
+  const total = subtotal + tax;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -52,13 +45,25 @@ const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
         className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-card p-6"
         noValidate
       >
-        <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Detalles de Entrega</h2>
+        <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+          Detalles de Entrega
+        </h2>
 
         {/* Nombre y Contacto */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {[
-            { id: "customerName", label: "Nombre Completo", type: "text", error: validationErrors.customerName },
-            { id: "contactNumber", label: "Número de Contacto", type: "tel", error: validationErrors.contactNumber },
+            {
+              id: "customerName",
+              label: "Nombre Completo",
+              type: "text",
+              error: validationErrors.customerName,
+            },
+            {
+              id: "contactNumber",
+              label: "Número de Contacto",
+              type: "tel",
+              error: validationErrors.contactNumber,
+            },
           ].map((field) => (
             <div key={field.id}>
               <label htmlFor={field.id} className="form-label">
@@ -68,17 +73,15 @@ const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
                 type={field.type}
                 id={field.id}
                 name={field.id}
-                className={`form-input ${field.error ? "border-red-500" : ""}`}
-                value={form[field.id as keyof typeof form]}
+                className={`form-input ${
+                  field.error ? "border-red-500" : ""
+                }`}
+                value={form[field.id as keyof typeof form] as string}
                 onChange={handleInputChange}
                 placeholder={field.label}
-                aria-invalid={!!field.error}
-                aria-describedby={field.error ? `${field.id}-error` : undefined}
               />
               {field.error && (
-                <p id={`${field.id}-error`} className="text-red-500 text-sm mt-1">
-                  {field.error}
-                </p>
+                <p className="text-red-500 text-sm mt-1">{field.error}</p>
               )}
             </div>
           ))}
@@ -93,15 +96,15 @@ const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
             type="text"
             id="deliveryAddress"
             name="deliveryAddress"
-            className={`form-input ${validationErrors.deliveryAddress ? "border-red-500" : ""}`}
+            className={`form-input ${
+              validationErrors.deliveryAddress ? "border-red-500" : ""
+            }`}
             value={form.deliveryAddress}
             onChange={handleInputChange}
             placeholder="Dirección, apartamento, edificio, etc."
-            aria-invalid={!!validationErrors.deliveryAddress}
-            aria-describedby={validationErrors.deliveryAddress ? "deliveryAddress-error" : undefined}
           />
           {validationErrors.deliveryAddress && (
-            <p id="deliveryAddress-error" className="text-red-500 text-sm mt-1">
+            <p className="text-red-500 text-sm mt-1">
               {validationErrors.deliveryAddress}
             </p>
           )}
@@ -111,7 +114,11 @@ const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
         <div className="mb-8">
           <h3 className="form-label">Método de Pago</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-            {PAYMENT_OPTIONS.map((payment) => {
+            {[
+              { value: "cash", label: "Efectivo", icon: DollarSign },
+              { value: "card", label: "Débito/Crédito", icon: CreditCard },
+              { value: "online", label: "Pago en Línea", icon: CreditCard },
+            ].map((payment) => {
               const Icon = payment.icon;
               const active = form.paymentMethod === payment.value;
               return (
@@ -132,7 +139,9 @@ const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
                     className="mr-2"
                   />
                   <Icon size={18} className="mr-2 text-primary-600" />
-                  <span className="text-gray-900 dark:text-white">{payment.label}</span>
+                  <span className="text-gray-900 dark:text-white">
+                    {payment.label}
+                  </span>
                 </label>
               );
             })}
@@ -171,7 +180,14 @@ const OrderDetailsForm: React.FC<OrderDetailsFormProps> = ({
       </form>
 
       {/* Resumen lateral */}
-      <OrderSummary items={items} subtotal={subtotal} tax={tax} discount={0} total={total} className="sticky top-24" />
+      <OrderSummary
+        items={items}
+        subtotal={subtotal}
+        tax={tax}
+        discount={0}
+        total={total}
+        className="sticky top-24"
+      />
     </div>
   );
 };

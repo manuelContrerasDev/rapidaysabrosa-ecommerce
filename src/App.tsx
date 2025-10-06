@@ -1,10 +1,11 @@
 // src/App.tsx
-import React, { Suspense, lazy } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Layout from "./components/layout/Layout";
-import { PATHS } from "./routes/paths";
+import React, { lazy,Suspense } from "react";
+import { BrowserRouter as Router, Navigate,Route, Routes } from "react-router-dom";
+
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import LoaderPage from "./components/common/LoaderPage";
+import Layout from "./components/layout/Layout";
+import { PATHS } from "./routes/paths";
 
 // Lazy load de páginas
 const HomePage = lazy(() => import("./pages/HomePage"));

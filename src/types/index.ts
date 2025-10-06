@@ -31,7 +31,7 @@ export interface PizzaSize {
 
 export interface CartItem {
   id: string;
-  productId: string; // más genérico que "pizzaId"
+  productId: string; // más genérico
   name: string;
   size?: string; // opcional, solo aplica a pizzas
   price: number;
@@ -61,6 +61,7 @@ export interface Promotion {
 }
 
 // src/utils/currency.ts
+/*
 export const clp = (v: number) =>
   new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 }).format(v);
-
+*/

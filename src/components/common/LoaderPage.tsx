@@ -1,6 +1,6 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { Pizza } from "lucide-react";
+import React from "react";
 
 const LoaderPage: React.FC = () => {
   return (

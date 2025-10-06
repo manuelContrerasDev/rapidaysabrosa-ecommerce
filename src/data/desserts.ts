@@ -6,7 +6,7 @@ export const desserts: Product[] = [
     name: "Tiramisú",
     description: "Postre italiano con café y crema mascarpone.",
     image: "/images/desserts/ds01-dessert01.jpg",
-    price: 4.99,
+    price: 9999,
     category: "Postres",
   },
   {
@@ -14,7 +14,7 @@ export const desserts: Product[] = [
     name: "Helado de Vainilla",
     description: "Clásico helado de vainilla cremosa.",
     image: "/images/desserts/ds02-dessert02.jpg",
-    price: 3.99,
+    price: 9999,
     category: "Postres",
   },
   {
@@ -22,7 +22,7 @@ export const desserts: Product[] = [
     name: "Tiramisú",
     description: "Postre italiano con café y crema mascarpone.",
     image: "/images/desserts/ds03-dessert03.jpg",
-    price: 4.99,
+    price: 9999,
     category: "Postres",
   },
   {
@@ -30,7 +30,7 @@ export const desserts: Product[] = [
     name: "Helado de Vainilla",
     description: "Clásico helado de vainilla cremosa.",
     image: "/images/desserts/ds04-dessert04.jpg",
-    price: 3.99,
+    price: 9999,
     category: "Postres",
   },
   {
@@ -38,7 +38,7 @@ export const desserts: Product[] = [
     name: "Tiramisú",
     description: "Postre italiano con café y crema mascarpone.",
     image: "/images/desserts/ds05-dessert05.jpg",
-    price: 4.99,
+    price: 9999,
     category: "Postres",
   },
   {
@@ -46,7 +46,7 @@ export const desserts: Product[] = [
     name: "Helado de Vainilla",
     description: "Clásico helado de vainilla cremosa.",
     image: "/images/desserts/ds06-dessert06.jpg",
-    price: 3.99,
+    price: 9999,
     category: "Postres",
   },
   {
@@ -54,7 +54,7 @@ export const desserts: Product[] = [
     name: "Helado de Vainilla",
     description: "Clásico helado de vainilla cremosa.",
     image: "/images/desserts/ds07-dessert07.jpg",
-    price: 3.99,
+    price: 9999,
     category: "Postres",
   },
   {
@@ -62,7 +62,7 @@ export const desserts: Product[] = [
     name: "Helado de Vainilla",
     description: "Clásico helado de vainilla cremosa.",
     image: "/images/desserts/ds08-dessert08.jpg",
-    price: 3.99,
+    price: 9999,
     category: "Postres",
   },
 ];

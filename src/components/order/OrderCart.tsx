@@ -1,12 +1,13 @@
 // src/components/order/OrderCart.tsx
+import { ShoppingCart } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
-import CartItem from "../ui/CartItem";
-import OrderSummary from "./OrderSummary";
-import { CATALOG } from "../../routes/paths";
+
 import { useCart } from "../../context/CartContext";
 import { useCartTotal } from "../../hooks/useCartTotal";
+import { CATALOG } from "../../routes/paths";
+import CartItem from "../ui/CartItem";
+import OrderSummary from "./OrderSummary";
 
 interface OrderCartProps {
   onProceed: () => void;

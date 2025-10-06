@@ -1,99 +1,126 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import { PlusCircle, Flame, Leaf } from "lucide-react";
 import { Product } from "../../types";
 import { useCart } from "../../context/CartContext";
+import { clp } from "../../utils/currency";
 
 interface ProductCardProps {
-  product: Product;
-  index?: number;
+  product: Product; // price en CLP entero
 }
 
-const IMAGE_HEIGHT = 160; // altura fija para desktop
-const MOBILE_IMAGE_WIDTH = 120; // ancho fijo en mobile
-
-const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart } = useCart();
-  const [added, setAdded] = useState(false);
+  const [selectedSizeName, setSelectedSizeName] = useState<string | undefined>(
+    product.sizes?.[0]?.name
+  );
 
-  const handleAddToCart = () => {
+  const selectedSize = useMemo(
+    () => product.sizes?.find((s) => s.name === selectedSizeName),
+    [product.sizes, selectedSizeName]
+  );
+
+  const unitPrice = useMemo(
+    () => product.price + (selectedSize?.priceModifier ?? 0),
+    [product.price, selectedSize]
+  );
+
+  const handleAdd = () => {
     addToCart({
-      id: `${product.id}-${Date.now()}`,
+      id: `${product.id}-${selectedSize?.name ?? "default"}`,
       productId: product.id,
       name: product.name,
-      size: product.sizes ? product.sizes[0].name : undefined,
-      price: product.price,
+      size: selectedSize?.name,
+      price: unitPrice, // CLP entero
       quantity: 1,
     });
-
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1200);
   };
 
   return (
     <motion.div
-      layout
-      initial={{ opacity: 0, y: 15 }}
+      className="card h-full flex flex-col"
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 10 }}
-      transition={{ duration: 0.32, delay: index * 0.05, ease: "easeOut" }}
-      className="flex flex-col sm:flex-col bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-md overflow-hidden relative"
+      transition={{ duration: 0.25 }}
     >
-      {/* Mobile horizontal layout */}
-      <div className="flex sm:flex-col">
-        <div
-          className="flex-shrink-0 w-1/3 sm:w-full h-full"
-          style={{ height: IMAGE_HEIGHT }}
-        >
-          <motion.img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-full object-cover"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-            loading="lazy"
-          />
-        </div>
+      {/* Imagen */}
+      <div className="relative overflow-hidden rounded-t-lg h-48">
+        <motion.img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-cover"
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.25 }}
+        />
 
-        <div className="flex-1 p-3 sm:p-4 flex flex-col justify-between">
-          <div>
-            <h3 className="text-sm sm:text-lg font-semibold text-gray-900 dark:text-white mb-1">
-              {product.name}
-            </h3>
-            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-1">
-              {product.description}
-            </p>
-          </div>
-
-          <div className="flex items-center justify-between mt-2">
-            <span className="text-red-600 dark:text-red-400 font-bold text-sm sm:text-lg">
-              ${product.price.toFixed(2)}
+        {/* Badges */}
+        <div className="absolute top-2 left-2 flex gap-1">
+          {product.isNew && (
+            <span className="bg-accent-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+              NEW
             </span>
-
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              className={`px-3 py-1 sm:px-4 sm:py-2 rounded-xl shadow text-white
-                ${added ? "bg-green-500 dark:bg-green-400" : "bg-red-600 dark:bg-red-500"}
-                hover:${added ? "bg-green-600 dark:bg-green-500" : "bg-red-700 dark:bg-red-600"}`}
-              onClick={handleAddToCart}
-            >
-              {added ? "Agregado" : "Agregar"}
-            </motion.button>
-          </div>
+          )}
+          {product.isVegetarian && (
+            <span className="bg-secondary-500 text-white text-xs px-2 py-1 rounded-full flex items-center">
+              <Leaf size={12} className="mr-1" /> Veg
+            </span>
+          )}
+          {product.isSpicy && (
+            <span className="bg-primary-500 text-white text-xs px-2 py-1 rounded-full flex items-center">
+              <Flame size={12} className="mr-1" /> Spicy
+            </span>
+          )}
         </div>
       </div>
 
-      {added && (
-        <motion.span
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: -20 }}
-          exit={{ opacity: 0, y: -10 }}
-          className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-xs px-2 py-1 rounded shadow"
+      {/* Contenido */}
+      <div className="p-4 flex-grow flex flex-col">
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            {product.name}
+          </h3>
+          <span className="text-primary-600 font-bold">{clp(unitPrice)}</span>
+        </div>
+
+        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 flex-grow">
+          {product.description}
+        </p>
+
+        {/* Tamaños opcionales */}
+        {!!product.sizes?.length && (
+          <div className="mb-4">
+            <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+              Tamaño:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {product.sizes.map((size) => (
+                <button
+                  key={size.name}
+                  className={`px-2 py-1 text-xs rounded-full transition-colors ${
+                    selectedSizeName === size.name
+                      ? "bg-primary-600 text-white"
+                      : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600"
+                  }`}
+                  onClick={() => setSelectedSizeName(size.name)}
+                  aria-pressed={selectedSizeName === size.name}
+                >
+                  {`${size.name} (${size.size} cm)`}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <button
+          className="flex items-center justify-center gap-2 w-full btn btn-primary mt-auto"
+          onClick={handleAdd}
         >
-          Agregando +1
-        </motion.span>
-      )}
+          <PlusCircle size={18} />
+          Agregar al Pedido
+        </button>
+      </div>
     </motion.div>
   );
 };
 
-export default ProductCard;
+export default React.memo(ProductCard);

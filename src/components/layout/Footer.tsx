@@ -1,14 +1,14 @@
+import {
+  Clock,
+  Facebook,
+  Instagram,
+  Mail,
+  MapPin,
+  Phone,
+  Twitter,
+} from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  Phone,
-  MapPin,
-  Clock,
-  Instagram,
-  Facebook,
-  Twitter,
-  Mail,
-} from "lucide-react";
 
 const quickLinks = [
   { title: "Inicio", to: "/home" },

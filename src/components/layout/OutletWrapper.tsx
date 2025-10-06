@@ -1,7 +1,7 @@
 // src/components/layout/OutletWrapper.tsx
+import { motion } from "framer-motion";
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
 
 const OutletWrapper: React.FC = () => {
   const { pathname } = useLocation();

@@ -1,11 +1,12 @@
-import React, { useState, useMemo, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence,motion } from "framer-motion";
+import React, { useMemo, useRef,useState } from "react";
 import Marquee from "react-fast-marquee";
-import { Product } from "../types";
-import { pizzas, burgers, drinks, desserts } from "../data";
-import PromotionsCarousel from "../components/promotions/PromotionsCarousel";
-import CatalogFiltersUnified from "../components/filters/CatalogFiltersUnified";
+
 import ProductSection from "../components/catalog/ProductSection";
+import CatalogFiltersUnified from "../components/filters/CatalogFiltersUnified";
+import PromotionsCarousel from "../components/promotions/PromotionsCarousel";
+import { burgers, desserts,drinks, pizzas } from "../data";
+import { Product } from "../types";
 
 const allProducts: Product[] = [...pizzas, ...burgers, ...drinks, ...desserts];
 

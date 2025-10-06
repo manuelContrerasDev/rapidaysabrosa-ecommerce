@@ -1,8 +1,8 @@
 // src/pages/NotFoundPage.tsx
-import React from "react";
-import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 import { AlertTriangle } from "lucide-react";
+import React from "react";
+import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 
 const NotFoundPage: React.FC = () => {
   return (
@@ -27,7 +27,7 @@ const NotFoundPage: React.FC = () => {
         404 - Página no encontrada
       </h1>
       <p className="text-gray-600 dark:text-gray-300 text-center max-w-md mb-8">
-        Lo sentimos, la página que buscas no existe o fue movida.  
+        Lo sentimos, la página que buscas no existe o fue movida.
         Puedes volver al inicio o explorar nuestro catálogo de pizzas artesanales.
       </p>
 

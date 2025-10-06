@@ -1,6 +1,6 @@
 // src/components/order/OrderSteps.tsx
+import { Check,CreditCard, ShoppingCart } from "lucide-react";
 import React from "react";
-import { ShoppingCart, CreditCard, Check } from "lucide-react";
 
 interface OrderStepsProps {
   currentStep: "cart" | "details" | "confirmation";

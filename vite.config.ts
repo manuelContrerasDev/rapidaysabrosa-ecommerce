@@ -1,8 +1,8 @@
 // vite.config.ts
-import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
+import { defineConfig } from 'vite';
 
 // Definir __dirname en ESM
 const __filename = fileURLToPath(import.meta.url);

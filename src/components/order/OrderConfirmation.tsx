@@ -1,6 +1,6 @@
 // src/components/order/OrderConfirmation.tsx
-import React from "react";
 import { Check, Clock } from "lucide-react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 interface OrderConfirmationProps {

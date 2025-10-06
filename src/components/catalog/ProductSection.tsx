@@ -1,7 +1,8 @@
+import { AnimatePresence,motion } from "framer-motion";
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import ProductCard from "./ProductCard";
+
 import { Product } from "../../types";
+import ProductCard from "./ProductCard";
 
 interface ProductSectionProps {
   title: string;
