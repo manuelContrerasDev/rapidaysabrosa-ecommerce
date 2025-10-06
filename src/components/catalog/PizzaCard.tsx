@@ -1,9 +1,11 @@
+// src/components/catalog/PizzaCard.tsx
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Flame, Leaf, PlusCircle } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 import { Pizza, PizzaSize } from "../../types";
 import { clp } from "../../utils/currency";
+import { imageCandidates } from "../../utils/images";
 import { useToast } from "../ui/toastProvider";
 
 interface PizzaCardProps {
@@ -14,7 +16,7 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza }) => {
   const [selectedSize, setSelectedSize] = useState<PizzaSize>(pizza.sizes[0]);
   const [isHovered, setIsHovered] = useState(false);
 
-  // 👇 usamos addToCartSync para obtener la cantidad acumulada (xN)
+  // usamos addToCartSync para obtener la cantidad acumulada (xN)
   const { addToCartSync } = useCart();
   const { showToast } = useToast();
 
@@ -25,14 +27,13 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza }) => {
 
   const handleAddToCart = () => {
     const res = addToCartSync({
-      id: `${pizza.id}-${selectedSize.name}`, // será normalizado a uniqueId en el contexto
+      id: `${pizza.id}-${selectedSize.name}`,
       productId: pizza.id,
       name: pizza.name,
       size: selectedSize.name,
       price: displayPrice, // CLP entero
       quantity: 1,
     });
-    // Toast sincronizado con la línea: x2, x3, ...
     showToast(`${pizza.name} (${selectedSize.name}) · x${res.lineQuantity}`);
   };
 
@@ -40,6 +41,8 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza }) => {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
+
+  const img = imageCandidates(pizza.image);
 
   return (
     <motion.div
@@ -52,20 +55,26 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative overflow-hidden rounded-t-lg h-48">
-        <motion.img
-          src={pizza.image}
-          alt={pizza.name}
-          className="w-full h-full object-cover"
-          animate={{ scale: isHovered ? 1.05 : 1 }}
-          transition={{ duration: 0.3 }}
-        />
+        {/* picture con AVIF/WEBP + fallback, manteniendo motion.img para animación */}
+        <picture>
+          {img.avif && <source srcSet={img.avif} type="image/avif" />}
+          {img.webp && <source srcSet={img.webp} type="image/webp" />}
+          <motion.img
+            src={img.fallback}
+            alt={pizza.name}
+            className="w-full h-full object-cover"
+            animate={{ scale: isHovered ? 1.05 : 1 }}
+            transition={{ duration: 0.3 }}
+            loading="lazy"
+            decoding="async"
+            fetchPriority="low"
+          />
+        </picture>
 
         {/* Badges */}
         <div className="absolute top-2 left-2 flex gap-1">
           {pizza.isNew && (
-            <span className="bg-accent-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-              NEW
-            </span>
+            <span className="bg-accent-500 text-white text-xs font-bold px-2 py-1 rounded-full">NEW</span>
           )}
           {pizza.isVegetarian && (
             <span className="bg-secondary-500 text-white text-xs px-2 py-1 rounded-full flex items-center">
