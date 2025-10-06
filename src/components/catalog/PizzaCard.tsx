@@ -6,7 +6,7 @@ import { useCart } from "../../context/CartContext";
 import { Pizza, PizzaSize } from "../../types";
 import { clp } from "../../utils/currency";
 import { imageCandidates } from "../../utils/images";
-import { useToast } from "../ui/toastProvider";
+import { useToast } from "../../context/ToastContext";
 
 interface PizzaCardProps {
   pizza: Pizza; // price en CLP entero

@@ -1,17 +1,17 @@
+// src/components/catalog/ProductCard.tsx
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { PlusCircle, Flame, Leaf } from "lucide-react";
 import { Product } from "../../types";
 import { useCart } from "../../context/CartContext";
 import { clp } from "../../utils/currency";
-import { useToast } from "../ui/toastProvider";
+import { useToast } from "../../context/ToastContext"; // ✅ nuevo import actualizado
 
 interface ProductCardProps {
-  product: Product; // price en CLP entero
+  product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  // 👇 usamos addToCartSync para obtener la cantidad acumulada (xN)
   const { addToCartSync } = useCart();
   const { showToast } = useToast();
 
@@ -29,18 +29,26 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     [product.price, selectedSize]
   );
 
-  const handleAdd = () => {
+  const handleAdd = (e: React.MouseEvent<HTMLButtonElement>) => {
     const res = addToCartSync({
       id: `${product.id}-${selectedSize?.name ?? "default"}`,
       productId: product.id,
       name: product.name,
       size: selectedSize?.name,
-      price: unitPrice, // CLP entero
+      price: unitPrice,
       quantity: 1,
     });
-    showToast(
-      `${product.name}${selectedSize?.name ? ` (${selectedSize.name})` : ""} · x${res.lineQuantity}`
-    );
+
+    // 📍 Calculamos la posición del botón
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + window.scrollY;
+
+    // ✨ Mostramos el toast local tipo burbuja justo encima del botón
+    showToast(`+${res.lineQuantity}`, {
+      duration: 900,
+      position: { x, y: y - 35 },
+    });
   };
 
   return (
@@ -96,7 +104,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Tamaños opcionales */}
         {!!product.sizes?.length && (
           <div className="mb-4">
-            <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">Tamaño:</p>
+            <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+              Tamaño:
+            </p>
             <div className="flex flex-wrap gap-2">
               {product.sizes.map((size) => (
                 <button
@@ -117,14 +127,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
         )}
 
-        <button
+        {/* Botón agregar */}
+        <motion.button
           type="button"
-          className="flex items-center justify-center gap-2 w-full btn btn-primary mt-auto active:scale-[0.98] transition"
+          className="flex items-center justify-center gap-2 w-full btn btn-primary mt-auto active:scale-[0.98] transition relative overflow-visible"
           onClick={handleAdd}
+          whileTap={{ scale: 0.97 }}
         >
           <PlusCircle size={18} />
           Agregar al Pedido
-        </button>
+        </motion.button>
       </div>
     </motion.div>
   );

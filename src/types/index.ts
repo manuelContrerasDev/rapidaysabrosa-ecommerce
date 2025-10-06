@@ -1,4 +1,8 @@
-// 🔹 Tipo base genérico
+// ================================
+// 📦 Tipos globales y de dominio
+// ================================
+
+// 🔹 Tipo base genérico (para cualquier producto del catálogo)
 export interface Product {
   id: string;
   name: string;
@@ -11,9 +15,19 @@ export interface Product {
   isNew?: boolean;
   popular?: boolean;
   ingredients?: string[];
-  sizes?: { name: string; size: number; priceModifier: number }[];
+  sizes?: ProductSize[]; // tamaños opcionales
 }
 
+// 🔹 Subtipo base para tamaños genéricos
+export interface ProductSize {
+  name: string;
+  size: number; // en cm
+  priceModifier: number;
+}
+
+// ================================
+// 🍕 Tipos específicos de productos
+// ================================
 
 // 🔹 Extensión específica para Pizzas
 export interface Pizza extends Product {
@@ -23,21 +37,28 @@ export interface Pizza extends Product {
   isNew: boolean;
 }
 
+// 🔹 Tamaño de Pizza
 export interface PizzaSize {
   name: string;
-  size: number; // en cm
+  size: number; // cm
   priceModifier: number;
 }
 
+// ================================
+// 🛒 Carrito y pedidos
+// ================================
+
+// 🔹 Item dentro del carrito
 export interface CartItem {
   id: string;
-  productId: string; // más genérico
+  productId: string;
   name: string;
-  size?: string; // opcional, solo aplica a pizzas
+  size?: string; // opcional, ej: "Familiar"
   price: number;
   quantity: number;
 }
 
+// 🔹 Pedido completo
 export interface Order {
   orderId: string;
   customerName: string;
@@ -46,22 +67,39 @@ export interface Order {
   deliveryAddress: string;
   paymentMethod: string;
   totalAmount: number;
-  status: 'pending' | 'confirmed' | 'preparing' | 'out-for-delivery' | 'delivered';
+  status:
+    | "pending"
+    | "confirmed"
+    | "preparing"
+    | "out-for-delivery"
+    | "delivered";
   createdAt: Date;
 }
+
+// ================================
+// 🎁 Promociones y descuentos
+// ================================
 
 export interface Promotion {
   id: string;
   title: string;
   description: string;
   image: string;
-  discount: string;
-  validUntil: string;
+  discount: string; // ej: "20%" o "$2000"
+  validUntil: string; // fecha ISO string
   isActive: boolean;
 }
+
+// ================================
+// 💰 Utilidades (formateo moneda CLP)
+// ================================
 
 // src/utils/currency.ts
 /*
 export const clp = (v: number) =>
-  new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 }).format(v);
+  new Intl.NumberFormat("es-CL", {
+    style: "currency",
+    currency: "CLP",
+    maximumFractionDigits: 0,
+  }).format(v);
 */
