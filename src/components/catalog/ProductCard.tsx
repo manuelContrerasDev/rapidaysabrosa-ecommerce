@@ -4,13 +4,17 @@ import { PlusCircle, Flame, Leaf } from "lucide-react";
 import { Product } from "../../types";
 import { useCart } from "../../context/CartContext";
 import { clp } from "../../utils/currency";
+import { useToast } from "../ui/toastProvider";
 
 interface ProductCardProps {
   product: Product; // price en CLP entero
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { addToCart } = useCart();
+  // 👇 usamos addToCartSync para obtener la cantidad acumulada (xN)
+  const { addToCartSync } = useCart();
+  const { showToast } = useToast();
+
   const [selectedSizeName, setSelectedSizeName] = useState<string | undefined>(
     product.sizes?.[0]?.name
   );
@@ -26,7 +30,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   );
 
   const handleAdd = () => {
-    addToCart({
+    const res = addToCartSync({
       id: `${product.id}-${selectedSize?.name ?? "default"}`,
       productId: product.id,
       name: product.name,
@@ -34,6 +38,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       price: unitPrice, // CLP entero
       quantity: 1,
     });
+    showToast(
+      `${product.name}${selectedSize?.name ? ` (${selectedSize.name})` : ""} · x${res.lineQuantity}`
+    );
   };
 
   return (
@@ -89,13 +96,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Tamaños opcionales */}
         {!!product.sizes?.length && (
           <div className="mb-4">
-            <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-              Tamaño:
-            </p>
+            <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">Tamaño:</p>
             <div className="flex flex-wrap gap-2">
               {product.sizes.map((size) => (
                 <button
                   key={size.name}
+                  type="button"
                   className={`px-2 py-1 text-xs rounded-full transition-colors ${
                     selectedSizeName === size.name
                       ? "bg-primary-600 text-white"
@@ -112,7 +118,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         )}
 
         <button
-          className="flex items-center justify-center gap-2 w-full btn btn-primary mt-auto"
+          type="button"
+          className="flex items-center justify-center gap-2 w-full btn btn-primary mt-auto active:scale-[0.98] transition"
           onClick={handleAdd}
         >
           <PlusCircle size={18} />

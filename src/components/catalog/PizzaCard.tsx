@@ -1,11 +1,10 @@
-// src/components/catalog/PizzaCard.tsx
+import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Flame, Leaf,PlusCircle } from "lucide-react";
-import React, { useMemo,useState } from "react";
-
+import { Flame, Leaf, PlusCircle } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 import { Pizza, PizzaSize } from "../../types";
 import { clp } from "../../utils/currency";
+import { useToast } from "../ui/toastProvider";
 
 interface PizzaCardProps {
   pizza: Pizza; // price en CLP entero
@@ -14,7 +13,10 @@ interface PizzaCardProps {
 const PizzaCard: React.FC<PizzaCardProps> = ({ pizza }) => {
   const [selectedSize, setSelectedSize] = useState<PizzaSize>(pizza.sizes[0]);
   const [isHovered, setIsHovered] = useState(false);
-  const { addToCart } = useCart();
+
+  // 👇 usamos addToCartSync para obtener la cantidad acumulada (xN)
+  const { addToCartSync } = useCart();
+  const { showToast } = useToast();
 
   const displayPrice = useMemo(
     () => pizza.price + (selectedSize?.priceModifier ?? 0),
@@ -22,14 +24,16 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza }) => {
   );
 
   const handleAddToCart = () => {
-    addToCart({
-      id: `${pizza.id}-${selectedSize.name}`, // será reemplazado por addToCart (uniqueId), pero deja rastro
+    const res = addToCartSync({
+      id: `${pizza.id}-${selectedSize.name}`, // será normalizado a uniqueId en el contexto
       productId: pizza.id,
       name: pizza.name,
       size: selectedSize.name,
       price: displayPrice, // CLP entero
       quantity: 1,
     });
+    // Toast sincronizado con la línea: x2, x3, ...
+    showToast(`${pizza.name} (${selectedSize.name}) · x${res.lineQuantity}`);
   };
 
   const variants = {
@@ -59,7 +63,9 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza }) => {
         {/* Badges */}
         <div className="absolute top-2 left-2 flex gap-1">
           {pizza.isNew && (
-            <span className="bg-accent-500 text-white text-xs font-bold px-2 py-1 rounded-full">NEW</span>
+            <span className="bg-accent-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+              NEW
+            </span>
           )}
           {pizza.isVegetarian && (
             <span className="bg-secondary-500 text-white text-xs px-2 py-1 rounded-full flex items-center">
@@ -88,6 +94,7 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza }) => {
             {pizza.sizes.map((size) => (
               <button
                 key={size.name}
+                type="button"
                 className={`px-2 py-1 text-xs rounded-full transition-colors ${
                   selectedSize.name === size.name
                     ? "bg-primary-600 text-white"
@@ -102,7 +109,11 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza }) => {
           </div>
         </div>
 
-        <button className="flex items-center justify-center gap-2 w-full btn btn-primary mt-auto" onClick={handleAddToCart}>
+        <button
+          type="button"
+          className="flex items-center justify-center gap-2 w-full btn btn-primary mt-auto active:scale-[0.98] transition"
+          onClick={handleAddToCart}
+        >
           <PlusCircle size={18} />
           Agregar al Pedido
         </button>

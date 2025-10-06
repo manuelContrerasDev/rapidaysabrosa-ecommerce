@@ -4,11 +4,12 @@ import "./index.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
-
 import App from "./App";
+import { ToastProvider } from "./components/ui/toastProvider";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import { CartProvider } from "./context/CartContext";
 import { ThemeProvider } from "./context/ThemeContext";
+
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -16,7 +17,9 @@ createRoot(document.getElementById("root")!).render(
       <ThemeProvider>
         <CartProvider>
           <ErrorBoundary>
-            <App />
+            <ToastProvider>
+              <App />
+            </ToastProvider>
           </ErrorBoundary>
         </CartProvider>
       </ThemeProvider>
