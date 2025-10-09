@@ -9,6 +9,7 @@ import { useToast } from "../../context/ToastContext"; // ✅ nuevo import actua
 
 interface ProductCardProps {
   product: Product;
+  index?: number; //
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
@@ -76,7 +77,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </span>
           )}
           {product.isVegetarian && (
-            <span className="bg-secondary-500 text-white text-xs px-2 py-1 rounded-full flex items-center">
+            <span className="bg-secondary-500 text-dark text-xs px-2 py-1 rounded-full flex items-center">
               <Leaf size={12} className="mr-1" /> Veg
             </span>
           )}
@@ -94,7 +95,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
             {product.name}
           </h3>
-          <span className="text-primary-600 font-bold">{clp(unitPrice)}</span>
+          <span className="text-secondary-600 font-bold">{clp(unitPrice)}</span>
         </div>
 
         <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 flex-grow">

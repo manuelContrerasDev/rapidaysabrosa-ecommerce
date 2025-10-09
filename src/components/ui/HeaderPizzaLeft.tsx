@@ -30,7 +30,7 @@ const HeaderPizzaLeft: React.FC = () => {
       transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
       className="flex items-center justify-center"
     >
-      <Pizza size={iconSize} className="text-dark dark:text-white drop-shadow-md" />
+      <Pizza size={iconSize} className="text-white dark:text-dark drop-shadow-md" />
     </motion.div>
   );
 };

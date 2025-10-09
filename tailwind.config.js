@@ -56,36 +56,40 @@ export default {
         olive: {
           light: '#6A8E91',
           DEFAULT: '#4A6C6F',
-          dark: '#2A4A4D'
+          dark: '#2A4A4D',
         },
 
         // 🎨 Paleta de marca Rapida&Sabrosa
         brand: {
           red: {
-            DEFAULT: "#c1121f",   // Rojo principal
-            dark: "#780000",      // Rojo oscuro
-            light: "#ef233c",     // Rojo claro
+            DEFAULT: "#c1121f",
+            dark: "#780000",
+            light: "#ef233c",
           },
           yellow: {
-            DEFAULT: "#ffb703",   // Amarillo vibrante
-            dark: "#ff9900",      // Amarillo oscuro
-            light: "#ffd166",     // Amarillo claro
+            DEFAULT: "#ffb703",
+            dark: "#ff9900",
+            light: "#ffd166",
           },
           black: {
-            DEFAULT: "#000000",   // Negro puro
-            soft: "#1a1a1a",      // Negro suave
-            light: "#333333",     // Gris oscuro
+            DEFAULT: "#000000",
+            soft: "#1a1a1a",
+            light: "#333333",
           },
         },
       },
 
+      // 🔠 Fuentes tipográficas
       fontFamily: {
-        display: ['Bungee', 'cursive'],
-        heading: ['Righteous', 'cursive'],
-        body: ['Fredoka', 'sans-serif'],
+        anton: ["Anton", "sans-serif"],      // 🔥 Titulares / navegación
+        poppins: ["Poppins", "sans-serif"],  // ✨ Cuerpo / texto general
         montserrat: ["Montserrat", "sans-serif"],
         playfair: ["Playfair Display", "serif"],
         lobster: ["Lobster", "cursive"],
+        bangers: ["Bangers", "sans-serif"], // (se mantiene por compatibilidad)
+        display: ["Bungee", "sans-serif"],
+        heading: ["Righteous", "sans-serif"],
+        body: ["Fredoka", "sans-serif"],
       },
 
       boxShadow: {
@@ -107,7 +111,11 @@ export default {
         'gradient-black-red': `linear-gradient(to right, ${theme("colors.brand.black.DEFAULT")}, ${theme("colors.brand.red.DEFAULT")})`,
       }),
 
-      // Animaciones
+    'cheese-texture':
+    "url('https://www.transparenttextures.com/patterns/cheese-hole.png')",
+
+
+
       keyframes: {
         fadeInUp: {
           '0%': { opacity: '0', transform: 'translateY(20px)' },

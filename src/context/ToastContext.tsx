@@ -1,4 +1,3 @@
-// src/context/ToastContext.tsx
 import React, {
   createContext,
   useCallback,
@@ -10,7 +9,7 @@ import React, {
 } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { useTheme } from "./ThemeContext"; // 👈 detectamos modo oscuro dinámicamente
+import { useTheme } from "./ThemeContext";
 
 // =======================================
 // 🔹 Tipos
@@ -19,7 +18,7 @@ import { useTheme } from "./ThemeContext"; // 👈 detectamos modo oscuro dinám
 export interface ToastOpts {
   id?: string;
   duration?: number; // ms
-  position?: { x: number; y: number }; // posición opcional (para toasts locales)
+  position?: { x: number; y: number }; // 👈 posición opcional para burbujas locales
 }
 
 export interface Toast {
@@ -47,7 +46,7 @@ export const useToast = (): ToastContextType => {
 };
 
 // =======================================
-// 🔹 Utilidad: crear raíz de portal
+// 🔹 Crear raíz del portal
 // =======================================
 
 function ensurePortalRoot(id = "toast-root"): HTMLElement {
@@ -61,7 +60,7 @@ function ensurePortalRoot(id = "toast-root"): HTMLElement {
 }
 
 // =======================================
-// 🔹 Provider principal
+// 🔹 Provider principal (stack + burbuja local)
 // =======================================
 
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -79,10 +78,16 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
       (crypto?.randomUUID
         ? crypto.randomUUID()
         : `${Date.now()}-${Math.random()}`);
-    const duration = Math.max(700, opts?.duration ?? 1200);
+    const duration = Math.max(800, opts?.duration ?? 1800);
     const until = Date.now() + duration;
 
-    const newToast: Toast = { id, message, until, position: opts?.position };
+    const newToast: Toast = {
+      id,
+      message,
+      until,
+      position: opts?.position,
+    };
+
     setToasts((prev) => [...prev, newToast]);
 
     const timer = window.setTimeout(() => {
@@ -92,7 +97,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
     timers.current.set(id, timer);
   }, []);
 
-  // Cleanup
+  // Limpieza de timers
   useEffect(() => {
     return () => {
       timers.current.forEach((t) => window.clearTimeout(t));
@@ -103,7 +108,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   const value = useMemo(() => ({ showToast }), [showToast]);
 
   // =======================================
-  // 🔹 Render de los toasts
+  // 🔹 Render visual
   // =======================================
 
   return (
@@ -111,49 +116,83 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
       {children}
 
       {createPortal(
-        <AnimatePresence initial={false}>
-          {toasts.map((t) => (
-            <motion.div
-              key={t.id}
-              initial={{ opacity: 0, y: 0, scale: 0.7 }}
-              animate={{
-                opacity: [0, 1, 1, 0],
-                y: [0, -40, -60],
-                scale: [0.7, 1.1, 1],
-              }}
-              exit={{ opacity: 0, y: -70, scale: 0.9 }}
-              transition={{
-                duration: 0.9,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className={`pointer-events-none fixed z-[9999] rounded-full px-2 py-[3px] text-[13px] font-bold shadow-md 
-                ${
-                  t.message.startsWith("+")
-                    ? isDarkMode
-                      ? "bg-brand-yellow text-brand-black"
-                      : "bg-brand-red text-white"
-                    : isDarkMode
-                    ? "bg-gray-800 text-white"
-                    : "bg-gray-900/90 text-white"
-                } `}
-              style={
-                t.position
-                  ? {
-                      left: `${t.position.x}px`,
-                      top: `${t.position.y}px`,
-                      transform: "translate(-50%, -50%)",
-                    }
-                  : {
-                      right: "max(env(safe-area-inset-right, 0px), 12px)",
-                      top: "max(env(safe-area-inset-top, 0px), 12px)",
-                    }
-              }
-              role="status"
-            >
-              {t.message}
-            </motion.div>
-          ))}
-        </AnimatePresence>,
+        <>
+          {/* 🔸 Toasts globales (arriba centrado) */}
+          <div
+            className="fixed top-5 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-[9999] pointer-events-none"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            <AnimatePresence initial={false}>
+              {toasts
+                .filter((t) => !t.position)
+                .map((t) => (
+                  <motion.div
+                    key={t.id}
+                    layout
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -15, scale: 0.9 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className={`rounded-full px-3 py-[6px] text-[13px] font-semibold shadow-md select-none
+                      ${
+                        t.message.startsWith("+")
+                          ? isDarkMode
+                            ? "bg-brand-yellow text-brand-black"
+                            : "bg-brand-red text-white"
+                          : isDarkMode
+                          ? "bg-gray-800 text-white"
+                          : "bg-gray-900/90 text-white"
+                      }`}
+                  >
+                    {t.message}
+                  </motion.div>
+                ))}
+            </AnimatePresence>
+          </div>
+
+          {/* 🔸 Toasts locales (burbuja + rebote) */}
+          <AnimatePresence>
+            {toasts
+              .filter((t) => !!t.position)
+              .map((t) => (
+                <motion.div
+                  key={t.id}
+                  initial={{ opacity: 0, y: 0, scale: 0.6 }}
+                  animate={{
+                    opacity: 1,
+                    y: -20, // 👆 pequeño salto hacia arriba
+                    scale: [0.6, 1.1, 1],
+                  }}
+                  exit={{ opacity: 0, y: -10, scale: 0.7 }}
+                  transition={{
+                    duration: 0.6,
+                    ease: "easeOut",
+                  }}
+                  style={{
+                    position: "absolute",
+                    left: t.position!.x,
+                    top: t.position!.y,
+                    transform: "translate(-50%, -100%)",
+                    zIndex: 99999,
+                    pointerEvents: "none",
+                  }}
+                  className={`rounded-full px-2 py-[4px] text-[12px] font-bold shadow-md select-none
+                    ${
+                      t.message.startsWith("+")
+                        ? isDarkMode
+                          ? "bg-brand-yellow text-brand-black"
+                          : "bg-brand-red text-white"
+                        : isDarkMode
+                        ? "bg-gray-800 text-white"
+                        : "bg-gray-900/90 text-white"
+                    }`}
+                >
+                  {t.message}
+                </motion.div>
+              ))}
+          </AnimatePresence>
+        </>,
         root
       )}
     </ToastContext.Provider>
