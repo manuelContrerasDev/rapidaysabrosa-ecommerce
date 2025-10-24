@@ -76,6 +76,26 @@ export default {
             soft: "#1a1a1a",
             light: "#333333",
           },
+          red: {
+            DEFAULT: "#e11d27",   // Rojo principal
+            dark: "#9b0b12",
+            light: "#ff3b41",
+          },
+          yellow: {
+            DEFAULT: "#ffb703",
+            dark: "#ff9900",
+            light: "#ffd166",
+          },
+          black: {
+            DEFAULT: "#000000",
+            soft: "#1a1a1a",
+            light: "#333333",
+          },
+          green: {
+            DEFAULT: "#16a34a",   // ✅ Verde confirmación
+            dark: "#15803d",
+            light: "#22c55e",
+          }
         },
       },
 

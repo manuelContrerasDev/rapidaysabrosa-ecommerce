@@ -2,7 +2,24 @@
 // 📦 Tipos globales y de dominio
 // ================================
 
+export interface ApiProduct {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  image_url: string;
+  category_id: number;
+  available: boolean;
+  stock: number;
+  discount: number | null;
+  created_at: string;
+  updated_at: string;
+  isVegetarian?: boolean;
+}
+
+
 // 🔹 Tipo base genérico (para cualquier producto del catálogo)
+
 export interface Product {
   id: string;
   name: string;

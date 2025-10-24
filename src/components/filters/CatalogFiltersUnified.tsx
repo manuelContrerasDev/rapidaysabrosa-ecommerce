@@ -38,10 +38,17 @@ const CatalogFiltersUnified: React.FC<CatalogFiltersUnifiedProps> = ({
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className={`sticky top-14 z-40 w-full max-w-7xl mx-auto px-2 md:px-4 md:py-2 
-        transition-all duration-200 border-b border-gray-200 dark:border-gray-700
-        ${scrolled ? "backdrop-blur-md shadow-sm" : "backdrop-blur-md"}`}
+      className={`sticky top-[clamp(52px,7vh,70px)] z-40 w-full mx-auto px-2 md:px-4 md:py-2
+        border-b border-gray-200/40 dark:border-gray-700/40
+        backdrop-blur-md transition-all duration-300
+        ${
+          scrolled
+            ? "bg-white/50 dark:bg-gray-900/50 shadow-[0_2px_6px_rgba(0,0,0,0.15)]"
+            : "bg-white/40 dark:bg-gray-900/40"
+        }`}
     >
+
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         {/* 🔎 Buscador */}
         <div className={`${scrolled ? "mt-[2px]" : "mt-1"}`}>

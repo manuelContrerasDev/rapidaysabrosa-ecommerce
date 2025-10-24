@@ -100,3 +100,11 @@ Los botones de OrderCart y OrderDetailsForm avanzan entre pasos usando callbacks
 FallbackPage para errores 500.
 NotFoundPage para errores 404.
 ErrorBoundary capturando todo lo inesperado.
+
+
+🧩 4. Resultado completo de la sincronización
+Contexto	Rol	Qué aporta al feedback
+🛒 CartContext	Lógica de productos, totales, persistencia	Provee el addToCartSync() para el ProductCard
+🌗 ThemeContext	Maneja dark/light	Ajusta sombras y colores activos del botón
+💬 ToastContext	Maneja mensajes globales y locales	Muestra burbuja “+1” sincronizada con color brand-yellow/red
+🎨 Button + ProductCard	Interfaz y feedback visual	Sincroniza color, texto y animación con el estado del carrito y theme

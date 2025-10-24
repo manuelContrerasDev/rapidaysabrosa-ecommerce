@@ -14,11 +14,10 @@ import { useTheme } from "./ThemeContext";
 // =======================================
 // 🔹 Tipos
 // =======================================
-
 export interface ToastOpts {
   id?: string;
-  duration?: number; // ms
-  position?: { x: number; y: number }; // 👈 posición opcional para burbujas locales
+  duration?: number;
+  position?: { x: number; y: number };
 }
 
 export interface Toast {
@@ -35,20 +34,17 @@ export interface ToastContextType {
 // =======================================
 // 🔹 Contexto
 // =======================================
-
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 export const useToast = (): ToastContextType => {
   const ctx = useContext(ToastContext);
-  if (!ctx)
-    throw new Error("❌ useToast debe usarse dentro de un <ToastProvider>");
+  if (!ctx) throw new Error("❌ useToast debe usarse dentro de un <ToastProvider>");
   return ctx;
 };
 
 // =======================================
 // 🔹 Crear raíz del portal
 // =======================================
-
 function ensurePortalRoot(id = "toast-root"): HTMLElement {
   let el = document.getElementById(id);
   if (!el) {
@@ -62,7 +58,6 @@ function ensurePortalRoot(id = "toast-root"): HTMLElement {
 // =======================================
 // 🔹 Provider principal (stack + burbuja local)
 // =======================================
-
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -88,13 +83,15 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
       position: opts?.position,
     };
 
-    setToasts((prev) => [...prev, newToast]);
-
-    const timer = window.setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-      timers.current.delete(id);
-    }, duration);
-    timers.current.set(id, timer);
+    // ⏱️ Delay de 100 ms sincronizado con el rebote del botón
+    setTimeout(() => {
+      setToasts((prev) => [...prev, newToast]);
+      const timer = window.setTimeout(() => {
+        setToasts((prev) => prev.filter((t) => t.id !== id));
+        timers.current.delete(id);
+      }, duration);
+      timers.current.set(id, timer);
+    }, 100);
   }, []);
 
   // Limpieza de timers
@@ -110,14 +107,13 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   // =======================================
   // 🔹 Render visual
   // =======================================
-
   return (
     <ToastContext.Provider value={value}>
       {children}
 
       {createPortal(
         <>
-          {/* 🔸 Toasts globales (arriba centrado) */}
+          {/* 🔸 Toasts globales */}
           <div
             className="fixed top-5 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-[9999] pointer-events-none"
             aria-live="polite"
@@ -151,7 +147,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
             </AnimatePresence>
           </div>
 
-          {/* 🔸 Toasts locales (burbuja + rebote) */}
+          {/* 🔸 Toasts locales (burbuja + rebote sincronizado) */}
           <AnimatePresence>
             {toasts
               .filter((t) => !!t.position)
@@ -161,7 +157,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
                   initial={{ opacity: 0, y: 0, scale: 0.6 }}
                   animate={{
                     opacity: 1,
-                    y: -20, // 👆 pequeño salto hacia arriba
+                    y: [-10, -30, -25],
                     scale: [0.6, 1.1, 1],
                   }}
                   exit={{ opacity: 0, y: -10, scale: 0.7 }}

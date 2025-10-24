@@ -1,3 +1,4 @@
+// src/components/layout/Footer.tsx
 import {
   Clock,
   Facebook,
@@ -31,20 +32,24 @@ const socialLinks = [
 ] as const;
 
 const linkClass =
-  "text-gray-300 hover:text-accent-300 dark:hover:text-accent-400 transition-colors";
+  "text-gray-300 hover:text-[#FFB703] dark:hover:text-[#FFD54F] transition-colors";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-olive-dark dark:bg-gray-900 text-white pt-12 pb-6">
-      <div className="container-custom">
+    <footer
+      role="contentinfo"
+      className="bg-[#1a1a1a] dark:bg-gray-950 text-white pt-12 pb-6"
+    >
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 md:px-10">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
-          {/* About */}
-          <div>
-            <h3 className="mb-4 text-xl font-bold">Rapida&Sabrosa</h3>
-            <p className="mb-4 text-gray-200 dark:text-gray-400">
-              Auténticas pizzas artesanales hechas con los mejores ingredientes
-              y todo el cariño de nuestro sello profesional, entregadas
-              directamente a ti.
+          {/* 🧱 Sobre nosotros */}
+          <section>
+            <h3 className="mb-4 text-xl font-bold text-[#FFB703]">
+              Rápida&Sabrosa
+            </h3>
+            <p className="mb-4 text-gray-300 dark:text-gray-400">
+              Pizzas artesanales con ingredientes de primera y nuestro sello
+              inconfundible: sabor, rapidez y pasión por lo que hacemos.
             </p>
             <div className="flex space-x-4">
               {socialLinks.map(({ icon: Icon, href }) => (
@@ -60,36 +65,36 @@ const Footer: React.FC = () => {
                 </a>
               ))}
             </div>
-          </div>
+          </section>
 
-          {/* Contact */}
+          {/* ☎️ Contacto */}
           <address className="not-italic">
-            <h3 className="mb-4 text-xl font-bold">Contáctanos</h3>
-            <div className="space-y-3 text-gray-200 dark:text-gray-400">
-              <div className="flex items-center">
-                <Phone size={18} className="mr-2 text-accent-300" />
-                <span>(+56) 9 7431 4602</span>
-              </div>
-              <div className="flex items-center">
-                <Mail size={18} className="mr-2 text-accent-300" />
-                <span>hola@rapidosysabrosos.com</span>
-              </div>
-              <div className="flex items-start">
-                <MapPin size={18} className="mr-2 mt-1 text-accent-300" />
-                <span>
-                  Av. Santelices 200b, Isla de Maipo, Región Metropolitana
-                </span>
-              </div>
+            <h3 className="mb-4 text-xl font-bold text-[#FFB703]">
+              Contáctanos
+            </h3>
+            <div className="space-y-3 text-gray-300 dark:text-gray-400">
+              <p className="flex items-center">
+                <Phone size={18} className="mr-2 text-[#FFB703]" /> (+56) 9 7431
+                4602
+              </p>
+              <p className="flex items-center">
+                <Mail size={18} className="mr-2 text-[#FFB703]" />{" "}
+                hola@rapidosysabrosos.com
+              </p>
+              <p className="flex items-start">
+                <MapPin size={18} className="mr-2 mt-1 text-[#FFB703]" />
+                Av. Santelices 200b, Isla de Maipo, Región Metropolitana
+              </p>
             </div>
           </address>
 
-          {/* Hours */}
-          <div>
-            <h3 className="mb-4 text-xl font-bold">Horario</h3>
-            <div className="space-y-3 text-gray-200 dark:text-gray-400">
+          {/* ⏰ Horarios */}
+          <section>
+            <h3 className="mb-4 text-xl font-bold text-[#FFB703]">Horario</h3>
+            <div className="space-y-3 text-gray-300 dark:text-gray-400">
               {hours.map(({ days, time }) => (
                 <div key={days} className="flex items-start">
-                  <Clock size={18} className="mr-2 text-accent-300 mt-1" />
+                  <Clock size={18} className="mr-2 text-[#FFB703] mt-1" />
                   <div>
                     <p className="font-medium">{days}</p>
                     <p>{time}</p>
@@ -97,11 +102,11 @@ const Footer: React.FC = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </section>
 
-          {/* Quick Links */}
+          {/* 🔗 Enlaces rápidos */}
           <nav aria-label="Enlaces rápidos">
-            <h3 className="mb-4 text-xl font-bold">Enlaces</h3>
+            <h3 className="mb-4 text-xl font-bold text-[#FFB703]">Enlaces</h3>
             <ul className="space-y-2">
               {quickLinks.map(({ title, to }) => (
                 <li key={to}>
@@ -120,11 +125,11 @@ const Footer: React.FC = () => {
           </nav>
         </div>
 
-        {/* Bottom */}
-        <div className="mt-8 border-t border-olive dark:border-gray-600 pt-6 text-center text-sm text-neutral-300">
+        {/* 🔻 Footer bottom */}
+        <div className="mt-8 border-t border-gray-700 pt-6 text-center text-sm text-gray-400">
           <p>
-            &copy; {new Date().getFullYear()} Rapida&Sabrosa. Todos los derechos
-            reservados por <span className="font-semibold">Manudev</span>.
+            &copy; {new Date().getFullYear()} Rápida&Sabrosa. Todos los derechos
+            reservados por <span className="font-semibold text-[#FFB703]">ManuDev</span>.
           </p>
         </div>
       </div>
