@@ -9,17 +9,26 @@ import PromotionsCarousel from "../components/promotions/PromotionsCarousel";
 import SkeletonSection from "../components/ui/SkeletonSection";
 import { ApiProduct } from "../types";
 
-const API_URL =
-  import.meta.env.VITE_API_URL ||
-  "https://rapidaysabrosa-api.onrender.com/api/products";
+// 🌍 Auto detección de entorno (local o producción)
+const isLocal = window.location.hostname === "localhost";
+
+// ✅ Usa automáticamente el backend correcto según el entorno
+const API_BASE = isLocal
+  ? "http://localhost:4000/api"
+  : "https://rapidaysabrosa-api.onrender.com/api";
 
 const categoryMap: Record<number, string> = {
-  1: "Pizzas Clásicas",
-  4: "Pizzas BBQ",
-  5: "Pizzas Premium",
+  1: "Pizzas con Charcutería",
+  2: "Pizzas con Pollo",
+  3: "Pizzas con Mechada",
+  4: "Pizzas con Filete",
+  5: "Pizzas con Camarón",
+  6: "Pizzas Vegetarianas",
   7: "Hamburguesas",
   8: "Platos",
   9: "Bebidas",
+  10: "Agregados",
+  11: "Promociones",
 };
 
 const CatalogPage: React.FC = () => {
@@ -33,15 +42,15 @@ const CatalogPage: React.FC = () => {
 
   const productsRef = useRef<HTMLDivElement | null>(null);
 
-  // 🔁 Fetch productos desde el backend
+  // 🔁 Fetch de productos desde el backend (sin límite)
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const res = await fetch(API_URL);
+        const res = await fetch(`${API_BASE}/products`);
         if (!res.ok) throw new Error(`Error al cargar productos (${res.status})`);
-        const data = await res.json();
 
+        const data = await res.json();
         const normalized = Array.isArray(data)
           ? data
           : Array.isArray(data.data)
@@ -52,7 +61,7 @@ const CatalogPage: React.FC = () => {
           ...p,
           image_url: p.image_url?.startsWith("http")
             ? p.image_url
-            : `https://rapidaysabrosa-api.onrender.com/${p.image_url?.replace(/^\/+/, "")}`,
+            : `${API_BASE.replace("/api", "")}/${p.image_url?.replace(/^\/+/, "")}`,
         }));
 
         setProducts(fixed);
@@ -72,7 +81,7 @@ const CatalogPage: React.FC = () => {
     productsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
-  // 🧮 Filtrado de productos
+  // 🧮 Filtro local (cliente)
   const filteredProducts = useMemo(() => {
     const lowerSearch = searchTerm.toLowerCase();
     return products.filter((p) => {
@@ -100,7 +109,7 @@ const CatalogPage: React.FC = () => {
     [products]
   );
 
-  // 📊 Categorías visibles con resultados
+  // 📊 Categorías con resultados
   const displayedCategories = useMemo(
     () =>
       categories.filter((cat) =>
@@ -121,7 +130,7 @@ const CatalogPage: React.FC = () => {
     );
   }
 
-  // 🌈 --- RENDER PRINCIPAL con SKELETON + FADE ---
+  // 🌈 Render principal con loader + animaciones
   return (
     <AnimatePresence mode="wait">
       {loading ? (
@@ -130,7 +139,7 @@ const CatalogPage: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6, ease: "easeInOut" }}
+          transition={{ duration: 0.6 }}
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10"
         >
           {Array.from({ length: 3 }).map((_, i) => (
@@ -142,18 +151,14 @@ const CatalogPage: React.FC = () => {
           key="catalog-content"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          transition={{ duration: 0.5 }}
           className="flex flex-col"
         >
           {/* 🧲 PROMOCIONES + MARQUEE */}
           <section
             role="region"
             aria-label="Promociones destacadas"
-            className="w-full"
-            style={{
-              background:
-                "linear-gradient(to right, #e11d27, #000000, #ffb703)",
-            }}
+            className="w-full bg-gradient-to-r from-[#e11d27] via-black to-[#ffb703]"
           >
             <PromotionsCarousel />
             <div className="py-3 sm:py-4 md:py-5" aria-hidden="true">
@@ -172,7 +177,7 @@ const CatalogPage: React.FC = () => {
           </section>
 
           {/* 🧰 FILTROS */}
-          <section role="search" aria-label="Filtros de productos" className="relative z-40">
+          <section role="search" aria-label="Filtros" className="relative z-40">
             <CatalogFiltersUnified
               categories={categories}
               selectedCategory={selectedCategory}
@@ -199,10 +204,7 @@ const CatalogPage: React.FC = () => {
           </header>
 
           {/* 🧱 PRODUCTOS */}
-          <main
-            role="main"
-            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1"
-          >
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1">
             <AnimatePresence mode="popLayout">
               {displayedCategories.length > 0 ? (
                 displayedCategories.map((category, idx) => {
@@ -216,13 +218,10 @@ const CatalogPage: React.FC = () => {
                       layout
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 20 }}
                       transition={{
                         duration: 0.35,
                         delay: idx * 0.08,
-                        ease: "easeOut",
                       }}
-                      aria-labelledby={`section-${category}`}
                     >
                       <ProductSection
                         title={category}
@@ -244,7 +243,6 @@ const CatalogPage: React.FC = () => {
                   key="no-products"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
                   className="text-center py-12"
                 >
                   <h2 className="mb-2 text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-white">
