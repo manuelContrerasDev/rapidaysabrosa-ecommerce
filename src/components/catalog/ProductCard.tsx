@@ -1,18 +1,14 @@
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { PlusCircle, Flame, Leaf } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { Product } from "../../types";
 import { useCart } from "../../context/CartContext";
-import { clp } from "../../utils/currency";
 import { useToast } from "../../context/ToastContext";
+import { clp } from "../../utils/currency";
 import Button from "../ui/Button";
 
-interface ProductCardProps {
-  product: Product;
-  index?: number;
-}
-
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+// ✅ Si el backend ya entrega image_url absoluta, no hace falta procesarla más
+const ProductCard: React.FC<{ product: Product; index?: number }> = ({ product }) => {
   const { addToCartSync } = useCart();
   const { showToast } = useToast();
   const [isAdded, setIsAdded] = useState(false);
@@ -20,8 +16,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     product.sizes?.[0]?.name
   );
 
-  const imageSrc =
-    product.image || (product as any).image_url || "/assets/img/placeholder.png";
+  // ✅ Imagen: usa directamente image_url del backend
+  const imageSrc = useMemo(() => {
+    const src = (product as any).image_url || (product as any).image;
+    return src && /^https?:\/\//i.test(src)
+      ? src
+      : "/assets/img/placeholder.png";
+  }, [product]);
 
   const selectedSize = useMemo(
     () => product.sizes?.find((s) => s.name === selectedSizeName),
@@ -71,15 +72,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       transition={{ duration: 0.25 }}
     >
       {/* 🖼 Imagen */}
-      <div className="relative overflow-hidden h-48">
+      <div className="relative overflow-hidden h-48 bg-black">
         <motion.img
+          key={imageSrc}
           src={imageSrc}
           alt={product.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover select-none"
           whileHover={{ scale: 1.05 }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.4 }}
+          loading="lazy"
+          decoding="async"
           onError={(e) => {
             const img = e.target as HTMLImageElement;
             if (img.dataset.fallback !== "true") {
@@ -88,25 +92,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             }
           }}
         />
-
-        {/* Etiquetas */}
-        <div className="absolute top-2 left-2 flex gap-1">
-          {product.isNew && (
-            <span className="bg-[#FFB703] text-black text-xs font-bold px-2 py-1 rounded-full shadow-sm">
-              NEW
-            </span>
-          )}
-          {product.isVegetarian && (
-            <span className="bg-[#E8F5E9] text-[#16a34a] text-xs px-2 py-1 rounded-full flex items-center">
-              <Leaf size={12} className="mr-1" /> Veg
-            </span>
-          )}
-          {product.isSpicy && (
-            <span className="bg-[#E63946] text-white text-xs px-2 py-1 rounded-full flex items-center">
-              <Flame size={12} className="mr-1" /> Spicy
-            </span>
-          )}
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
       </div>
 
       {/* 🧾 Contenido */}
@@ -131,11 +117,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                   <button
                     key={size.name}
                     type="button"
-                    className={`px-2 py-1 text-xs rounded-full font-medium transition-all duration-200 border border-[#FFB703]/40
+                    className={`px-2 py-1 text-xs rounded-full font-medium duration-200 border border-[#FFB703]/40
                       ${
                         selectedSizeName === size.name
                           ? "bg-[#E63946] text-white border-[#E63946]"
-                          : "bg-transparent text-[#FFB703] hover:bg-[#E63946]/20"
+                          : "bg-transparent text-[#FFB703] hover:bg-[#E63946]/20 transition-colors"
                       }`}
                     onClick={() => setSelectedSizeName(size.name)}
                     aria-pressed={selectedSizeName === size.name}
@@ -158,10 +144,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             bg-[#E63946] hover:bg-[#C53030]
             text-white font-bold py-2 rounded-lg
             border border-[#FFB703]/60 shadow-[0_0_8px_rgba(255,183,3,0.3)]
-            transition-all duration-300"
+            transition-all duration-300 active:scale-[0.98]"
         >
           <PlusCircle size={18} />
-          {isAdded ? "Agregado ✅" : "Agregar al Pedido"}
+          {isAdded ? "Agregado +1" : "Agregar al Pedido"}
         </Button>
       </div>
     </motion.div>

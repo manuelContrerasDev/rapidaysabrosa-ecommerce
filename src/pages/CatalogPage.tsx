@@ -1,21 +1,15 @@
-// src/pages/CatalogPage.tsx
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import Marquee from "react-fast-marquee";
-
 import ProductSection from "../components/catalog/ProductSection";
 import CatalogFiltersUnified from "../components/filters/CatalogFiltersUnified";
 import PromotionsCarousel from "../components/promotions/PromotionsCarousel";
 import SkeletonSection from "../components/ui/SkeletonSection";
 import { ApiProduct } from "../types";
 
-// 🌍 Auto detección de entorno (local o producción)
-const isLocal = window.location.hostname === "localhost";
-
-// ✅ Usa automáticamente el backend correcto según el entorno
-const API_BASE = isLocal
-  ? "http://localhost:4000/api"
-  : "https://rapidaysabrosa-api.onrender.com/api";
+// 🌍 Variables de entorno globales
+const API_BASE = import.meta.env.VITE_API_URL;
+const IMAGE_BASE = import.meta.env.VITE_IMAGE_BASE;
 
 const categoryMap: Record<number, string> = {
   1: "Pizzas con Charcutería",
@@ -42,7 +36,7 @@ const CatalogPage: React.FC = () => {
 
   const productsRef = useRef<HTMLDivElement | null>(null);
 
-  // 🔁 Fetch de productos desde el backend (sin límite)
+  // 🔁 Fetch de productos desde backend Render
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -57,12 +51,14 @@ const CatalogPage: React.FC = () => {
           ? data.data
           : [];
 
-        const fixed = normalized.map((p: any) => ({
-          ...p,
-          image_url: p.image_url?.startsWith("http")
-            ? p.image_url
-            : `${API_BASE.replace("/api", "")}/${p.image_url?.replace(/^\/+/, "")}`,
-        }));
+        // 🧩 Fijar URLs absolutas de imagen (seguro para local y producción)
+        const fixed = normalized.map((p: any) => {
+          const path = p.image_url?.replace(/^\/+/, "") || "";
+          const fullUrl = path.startsWith("http")
+            ? path
+            : `${IMAGE_BASE}/${path}`;
+          return { ...p, image_url: fullUrl };
+        });
 
         setProducts(fixed);
       } catch (err: any) {
@@ -72,6 +68,7 @@ const CatalogPage: React.FC = () => {
         setLoading(false);
       }
     };
+
     fetchProducts();
   }, []);
 
@@ -81,7 +78,7 @@ const CatalogPage: React.FC = () => {
     productsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
-  // 🧮 Filtro local (cliente)
+  // 🧮 Filtro local
   const filteredProducts = useMemo(() => {
     const lowerSearch = searchTerm.toLowerCase();
     return products.filter((p) => {
@@ -96,7 +93,7 @@ const CatalogPage: React.FC = () => {
     });
   }, [products, selectedCategory, isVegetarian, searchTerm]);
 
-  // 🏷️ Categorías únicas
+  // Categorías únicas
   const categories = useMemo(
     () =>
       Array.from(
@@ -109,7 +106,7 @@ const CatalogPage: React.FC = () => {
     [products]
   );
 
-  // 📊 Categorías con resultados
+  // Categorías visibles
   const displayedCategories = useMemo(
     () =>
       categories.filter((cat) =>
@@ -118,7 +115,6 @@ const CatalogPage: React.FC = () => {
     [categories, filteredProducts]
   );
 
-  // ⚠️ Error visual
   if (error) {
     return (
       <div className="flex flex-col justify-center items-center min-h-[60vh] text-center px-4">
@@ -130,7 +126,7 @@ const CatalogPage: React.FC = () => {
     );
   }
 
-  // 🌈 Render principal con loader + animaciones
+  // 🌈 Render principal
   return (
     <AnimatePresence mode="wait">
       {loading ? (
@@ -154,7 +150,7 @@ const CatalogPage: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="flex flex-col"
         >
-          {/* 🧲 PROMOCIONES + MARQUEE */}
+          {/* 🧲 PROMOCIONES */}
           <section
             role="region"
             aria-label="Promociones destacadas"
@@ -189,15 +185,17 @@ const CatalogPage: React.FC = () => {
             />
           </section>
 
-          {/* 📍 SEPARADOR */}
           <div
             id="products-separator"
             ref={productsRef}
             className="container-custom border-t border-white dark:border-gray-900 mt-6 mb-4"
           />
 
-          {/* 🧾 TÍTULO */}
-          <header role="heading" aria-level={1} className="container-custom mt-2 mb-2">
+          <header
+            role="heading"
+            aria-level={1}
+            className="container-custom mt-2 mb-2"
+          >
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white border-b border-brand-red pb-2">
               Catálogo
             </h1>
@@ -211,17 +209,13 @@ const CatalogPage: React.FC = () => {
                   const sectionProducts = filteredProducts.filter(
                     (p) => categoryMap[p.category_id] === category
                   );
-
                   return (
                     <motion.section
                       key={category}
                       layout
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 0.35,
-                        delay: idx * 0.08,
-                      }}
+                      transition={{ duration: 0.35, delay: idx * 0.08 }}
                     >
                       <ProductSection
                         title={category}

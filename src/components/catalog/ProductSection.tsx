@@ -1,8 +1,8 @@
-import { AnimatePresence,motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
-
 import { Product } from "../../types";
 import ProductCard from "./ProductCard";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 interface ProductSectionProps {
   title: string;
@@ -28,7 +28,14 @@ const ProductSection: React.FC<ProductSectionProps> = ({ title, products }) => {
               exit={{ opacity: 0, y: 15 }}
               transition={{ duration: 0.35, ease: "easeOut", delay: idx * 0.05 }}
             >
-              <ProductCard product={product} index={idx} />
+              {/* 🔹 Pasamos la imagen ya procesada */}
+              <ProductCard
+                product={{
+                  ...product,
+                  image: getImageUrl(product.image || (product as any).image_url),
+                }}
+                index={idx}
+              />
             </motion.div>
           ))}
         </AnimatePresence>

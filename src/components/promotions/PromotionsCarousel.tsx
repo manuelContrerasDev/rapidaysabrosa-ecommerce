@@ -1,8 +1,8 @@
-import { AnimatePresence,motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Clock,Tag } from "lucide-react";
-import React, { useEffect,useState } from "react";
-
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronLeft, ChevronRight, Clock, Tag } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { promotions } from "../../data/promotions";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const PromotionsCarousel: React.FC = () => {
   const activePromotions = promotions.filter((promo) => promo.isActive);
@@ -32,6 +32,9 @@ const PromotionsCarousel: React.FC = () => {
 
   if (activePromotions.length === 0) return null;
 
+  const current = activePromotions[currentSlide];
+  const imageSrc = getImageUrl(current.image || current.image_url);
+
   return (
     <section className="relative w-full h-[15rem] sm:h-[18rem] md:h-[20rem] lg:h-[22rem]">
       <div className="relative w-full h-full overflow-hidden rounded-lg">
@@ -45,27 +48,37 @@ const PromotionsCarousel: React.FC = () => {
             className="absolute inset-0 w-full h-full"
           >
             <img
-              src={activePromotions[currentSlide].image}
-              alt={activePromotions[currentSlide].title}
+              src={imageSrc}
+              alt={current.title}
               className="w-full h-full object-cover object-center brightness-90"
+              loading="lazy"
+              decoding="async"
+              onError={(e) => {
+                const img = e.target as HTMLImageElement;
+                if (img.dataset.fallback !== "true") {
+                  img.src = "/assets/img/placeholder.png";
+                  img.dataset.fallback = "true";
+                }
+              }}
             />
+
             {/* Overlay */}
-            <div className="absolute inset-0 bg-black/20 flex flex-col justify-center items-center text-center px-4">
+            <div className="absolute inset-0 bg-black/25 flex flex-col justify-center items-center text-center px-4">
               <span className="bg-accent-500 text-white px-3 py-1 rounded-full text-sm sm:text-base font-bold flex items-center mb-1">
                 <Tag size={16} className="mr-1" />
-                {activePromotions[currentSlide].discount}
+                {current.discount}
               </span>
               <h3 className="text-lg sm:text-xl md:text-2xl font-display text-white mb-1 drop-shadow-lg">
-                {activePromotions[currentSlide].title}
+                {current.title}
               </h3>
               <p className="text-white text-xs sm:text-sm md:text-base drop-shadow-md max-w-md">
-                {activePromotions[currentSlide].description}
+                {current.description}
               </p>
               <div className="flex items-center text-white mt-2 drop-shadow-md text-xs sm:text-sm md:text-base">
                 <Clock size={16} className="mr-1" />
                 <span>
                   Válido hasta:{" "}
-                  {new Date(activePromotions[currentSlide].validUntil).toLocaleDateString("es-ES")}
+                  {new Date(current.validUntil).toLocaleDateString("es-ES")}
                 </span>
               </div>
               <button className="btn btn-primary text-xs sm:text-sm md:text-base px-4 sm:px-6 py-1 sm:py-2 mt-2 shadow-lg">

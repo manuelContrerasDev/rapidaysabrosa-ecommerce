@@ -34,7 +34,13 @@ export default defineConfig({
   },
   server: {
     port: 5173,
-    open: true,            // Abre navegador automáticamente
+    open: true,
+    headers: {
+      "Cross-Origin-Embedder-Policy": "unsafe-none",
+      "Cross-Origin-Opener-Policy": "unsafe-none",
+    },
+    
+                // Abre navegador automáticamente
   },
   preview: {
     port: 4173,

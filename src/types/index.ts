@@ -102,6 +102,7 @@ export interface Promotion {
   title: string;
   description: string;
   image: string;
+  image_url?: string; // opcional, solo si viene del backend
   discount: string; // ej: "20%" o "$2000"
   validUntil: string; // fecha ISO string
   isActive: boolean;

@@ -12,23 +12,23 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const quickLinks = [
-  { title: "Inicio", to: "/home" },
-  { title: "Menú", to: "/catalog" },
-  { title: "Ordenar", to: "/order" },
-  { title: "Sobre Nosotros", to: "#" },
-  { title: "Contacto", to: "#" },
+  { id: "home", title: "Inicio", to: "/home" },
+  { id: "menu", title: "Menú", to: "/catalog" },
+  { id: "order", title: "Ordenar", to: "/order" },
+  { id: "about", title: "Sobre Nosotros", to: "#" },
+  { id: "contact", title: "Contacto", to: "#" },
 ] as const;
 
 const hours = [
-  { days: "Lunes - Jueves", time: "12:00 - 22:30" },
-  { days: "Viernes - Sábado", time: "12:00 - 23:30" },
-  { days: "Domingo", time: "12:00 - 22:30" },
+  { id: "weekday", days: "Lunes - Jueves", time: "12:00 - 22:30" },
+  { id: "weekend", days: "Viernes - Sábado", time: "12:00 - 23:30" },
+  { id: "sunday", days: "Domingo", time: "12:00 - 22:30" },
 ] as const;
 
 const socialLinks = [
-  { icon: Instagram, href: "https://www.instagram.com/espacio_308/" },
-  { icon: Facebook, href: "#" },
-  { icon: Twitter, href: "#" },
+  { id: "instagram", icon: Instagram, href: "https://www.instagram.com/espacio_308/" },
+  { id: "facebook", icon: Facebook, href: "#" },
+  { id: "twitter", icon: Twitter, href: "#" },
 ] as const;
 
 const linkClass =
@@ -52,14 +52,14 @@ const Footer: React.FC = () => {
               inconfundible: sabor, rapidez y pasión por lo que hacemos.
             </p>
             <div className="flex space-x-4">
-              {socialLinks.map(({ icon: Icon, href }) => (
+              {socialLinks.map(({ id, icon: Icon, href }) => (
                 <a
-                  key={href}
+                  key={id}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={linkClass}
-                  aria-label={`Ir a ${href}`}
+                  aria-label={`Ir a ${id}`}
                 >
                   <Icon size={20} />
                 </a>
@@ -79,7 +79,7 @@ const Footer: React.FC = () => {
               </p>
               <p className="flex items-center">
                 <Mail size={18} className="mr-2 text-[#FFB703]" />{" "}
-                hola@rapidosysabrosos.com
+                hola@rapidaysabrosa.com
               </p>
               <p className="flex items-start">
                 <MapPin size={18} className="mr-2 mt-1 text-[#FFB703]" />
@@ -92,8 +92,8 @@ const Footer: React.FC = () => {
           <section>
             <h3 className="mb-4 text-xl font-bold text-[#FFB703]">Horario</h3>
             <div className="space-y-3 text-gray-300 dark:text-gray-400">
-              {hours.map(({ days, time }) => (
-                <div key={days} className="flex items-start">
+              {hours.map(({ id, days, time }) => (
+                <div key={id} className="flex items-start">
                   <Clock size={18} className="mr-2 text-[#FFB703] mt-1" />
                   <div>
                     <p className="font-medium">{days}</p>
@@ -108,8 +108,8 @@ const Footer: React.FC = () => {
           <nav aria-label="Enlaces rápidos">
             <h3 className="mb-4 text-xl font-bold text-[#FFB703]">Enlaces</h3>
             <ul className="space-y-2">
-              {quickLinks.map(({ title, to }) => (
-                <li key={to}>
+              {quickLinks.map(({ id, title, to }) => (
+                <li key={id}>
                   {to.startsWith("/") ? (
                     <Link to={to} className={linkClass}>
                       {title}
@@ -129,7 +129,8 @@ const Footer: React.FC = () => {
         <div className="mt-8 border-t border-gray-700 pt-6 text-center text-sm text-gray-400">
           <p>
             &copy; {new Date().getFullYear()} Rápida&Sabrosa. Todos los derechos
-            reservados por <span className="font-semibold text-[#FFB703]">ManuDev</span>.
+            reservados por{" "}
+            <span className="font-semibold text-[#FFB703]">ManuDev</span>.
           </p>
         </div>
       </div>

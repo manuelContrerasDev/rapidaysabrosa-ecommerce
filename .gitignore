@@ -1,3 +1,7 @@
+# =========================================
+# 🚀 FRONTEND IGNORE RULES (Vite + React)
+# =========================================
+
 # Logs
 logs
 *.log
@@ -7,21 +11,40 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Dependencies
+node_modules/
 
-# Editor directories and files
+# Build outputs
+dist/
+dist-ssr/
+build/
+*.local
+*.cache
+*.tmp
+.parcel-cache/
+.turbo/
+coverage/
+
+# Environment files (except example)
+.env
+.env.local
+.env.development
+.env.production
+
+# Keep the example for collaborators
+!/.env.example
+
+# Editor settings
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-.env
 
-.vercel
+# Hosting
+.vercel/
+.netlify/
